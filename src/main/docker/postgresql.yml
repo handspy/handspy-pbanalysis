@@ -1,0 +1,11 @@
+version: '2'
+services:
+  pbanalysis-postgresql:
+    image: postgres:12.1
+    # volumes:
+    #     - ~/volumes/jhipster/pbanalysis/postgresql/:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=pbanalysis
+      - POSTGRES_PASSWORD=
+    ports:
+      - 5432:5432

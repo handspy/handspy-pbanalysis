@@ -1,0 +1,99 @@
+{
+    "name": "PBBurst",
+    "fields": [
+        {
+            "fieldName": "duration",
+            "javadoc": "Duration of the burst",
+            "fieldType": "Duration",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "pauseDuration",
+            "javadoc": "Duration of the pause",
+            "fieldType": "Duration",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "startX",
+            "javadoc": "Start X coordinate of burst",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "startY",
+            "javadoc": "Start Y coordinate of burst",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "endX",
+            "javadoc": "End X coordinate of burst",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "endY",
+            "javadoc": "End Y coordinate of burst",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "distance",
+            "javadoc": "Distance traveled during burst",
+            "fieldType": "Double",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "avgSpeed",
+            "javadoc": "Average speed of burst",
+            "fieldType": "Double",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "text",
+            "javadoc": "Text slice written in burst",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "pBAnalysis",
+            "otherEntityRelationshipName": "pBBurst",
+            "javadoc": "A burst is part of a Pause-Burst analysis.",
+            "relationshipName": "analysis",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20200223180818",
+    "javadoc": "Burst of the pause-burst analysis.\\n\\n@author José Carlos Paiva",
+    "entityTableName": "pb_burst",
+    "dto": "mapstruct",
+    "pagination": "infinite-scroll",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": [
+        "gateway",
+        "pbanalysis"
+    ],
+    "microserviceName": "pbanalysis"
+}

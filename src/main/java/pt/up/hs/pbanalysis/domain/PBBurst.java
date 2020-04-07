@@ -8,10 +8,11 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.Duration;
 
 /**
- * Burst of the pause-burst analysis.\n\n@author José Carlos Paiva
+ * Burst of the pause-burst analysis.
+ *
+ * @author José Carlos Paiva
  */
 @Entity
 @Table(name = "pb_burst")
@@ -26,63 +27,73 @@ public class PBBurst implements Serializable {
     private Long id;
 
     /**
-     * Duration of the burst
+     * Duration of the pause that precedes this burst (in ms).
      */
     @NotNull
-    @Column(name = "duration", nullable = false)
-    private Duration duration;
-
-    /**
-     * Duration of the pause
-     */
-    @NotNull
+    @Min(value = 0L)
     @Column(name = "pause_duration", nullable = false)
-    private Duration pauseDuration;
+    private Long pauseDuration;
 
     /**
-     * Start X coordinate of burst
+     * Start time of this burst.
+     */
+    @NotNull
+    @Min(value = 0L)
+    @Column(name = "start_time", nullable = false)
+    private Long startTime;
+
+    /**
+     * End time of this burst.
+     */
+    @NotNull
+    @Min(value = 0L)
+    @Column(name = "end_time", nullable = false)
+    private Long endTime;
+
+    /**
+     * Start position of this burst in X-axis.
      */
     @NotNull
     @Column(name = "start_x", nullable = false)
-    private Integer startX;
+    private Double startX;
 
     /**
-     * Start Y coordinate of burst
+     * Start position of this burst in Y-axis.
      */
     @NotNull
     @Column(name = "start_y", nullable = false)
-    private Integer startY;
+    private Double startY;
 
     /**
-     * End X coordinate of burst
+     * End position of this burst in X-axis.
      */
     @NotNull
     @Column(name = "end_x", nullable = false)
-    private Integer endX;
+    private Double endX;
 
     /**
-     * End Y coordinate of burst
+     * End position of this burst in Y-axis.
      */
     @NotNull
     @Column(name = "end_y", nullable = false)
-    private Integer endY;
+    private Double endY;
 
     /**
-     * Distance traveled during burst
+     * Number of captured dots in this burst.
      */
     @NotNull
-    @Column(name = "distance", nullable = false)
+    @Min(value = 1)
+    @Column(name = "dot_count", nullable = false)
+    private Integer dotCount;
+
+    /**
+     * Distance traveled in this burst.
+     */
+    @Column(name = "distance")
     private Double distance;
 
     /**
-     * Average speed of burst
-     */
-    @NotNull
-    @Column(name = "avg_speed", nullable = false)
-    private Double avgSpeed;
-
-    /**
-     * Text slice written in burst
+     * Text slice written in burst.
      */
     @Column(name = "text")
     private String text;
@@ -91,7 +102,7 @@ public class PBBurst implements Serializable {
      * A burst is part of a Pause-Burst analysis.
      */
     @ManyToOne
-    @JsonIgnoreProperties("pBBursts")
+    @JsonIgnoreProperties("bursts")
     private PBAnalysis analysis;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -103,81 +114,107 @@ public class PBBurst implements Serializable {
         this.id = id;
     }
 
-    public Duration getDuration() {
-        return duration;
+    public String getText() {
+        return text;
     }
 
-    public PBBurst duration(Duration duration) {
-        this.duration = duration;
+    public PBBurst text(String text) {
+        this.text = text;
         return this;
     }
 
-    public void setDuration(Duration duration) {
-        this.duration = duration;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public Duration getPauseDuration() {
+    public Long getPauseDuration() {
         return pauseDuration;
     }
 
-    public PBBurst pauseDuration(Duration pauseDuration) {
+    public PBBurst pauseDuration(Long pauseDuration) {
         this.pauseDuration = pauseDuration;
         return this;
     }
 
-    public void setPauseDuration(Duration pauseDuration) {
+    public void setPauseDuration(Long pauseDuration) {
         this.pauseDuration = pauseDuration;
     }
 
-    public Integer getStartX() {
+    public Long getStartTime() {
+        return startTime;
+    }
+
+    public PBBurst startTime(Long startTime) {
+        this.startTime = startTime;
+        return this;
+    }
+
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+
+    public Long getEndTime() {
+        return endTime;
+    }
+
+    public PBBurst endTime(Long endTime) {
+        this.endTime = endTime;
+        return this;
+    }
+
+    public void setEndTime(Long endTime) {
+        this.endTime = endTime;
+    }
+
+    public Double getStartX() {
         return startX;
     }
 
-    public PBBurst startX(Integer startX) {
+    public PBBurst startX(Double startX) {
         this.startX = startX;
         return this;
     }
 
-    public void setStartX(Integer startX) {
+    public void setStartX(Double startX) {
         this.startX = startX;
     }
 
-    public Integer getStartY() {
+    public Double getStartY() {
         return startY;
     }
 
-    public PBBurst startY(Integer startY) {
+    public PBBurst startY(Double startY) {
         this.startY = startY;
         return this;
     }
 
-    public void setStartY(Integer startY) {
+    public void setStartY(Double startY) {
         this.startY = startY;
     }
 
-    public Integer getEndX() {
+    public Double getEndX() {
         return endX;
     }
 
-    public PBBurst endX(Integer endX) {
+    public PBBurst endX(Double endX) {
         this.endX = endX;
         return this;
     }
 
-    public void setEndX(Integer endX) {
+    public void setEndX(Double endX) {
         this.endX = endX;
     }
 
-    public Integer getEndY() {
+    public Double getEndY() {
         return endY;
     }
 
-    public PBBurst endY(Integer endY) {
+    public PBBurst endY(Double endY) {
         this.endY = endY;
         return this;
     }
 
-    public void setEndY(Integer endY) {
+    public void setEndY(Double endY) {
         this.endY = endY;
     }
 
@@ -194,30 +231,17 @@ public class PBBurst implements Serializable {
         this.distance = distance;
     }
 
-    public Double getAvgSpeed() {
-        return avgSpeed;
+    public Integer getDotCount() {
+        return dotCount;
     }
 
-    public PBBurst avgSpeed(Double avgSpeed) {
-        this.avgSpeed = avgSpeed;
+    public PBBurst dotCount(Integer dotCount) {
+        this.dotCount = dotCount;
         return this;
     }
 
-    public void setAvgSpeed(Double avgSpeed) {
-        this.avgSpeed = avgSpeed;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public PBBurst text(String text) {
-        this.text = text;
-        return this;
-    }
-
-    public void setText(String text) {
-        this.text = text;
+    public void setDotCount(Integer dotCount) {
+        this.dotCount = dotCount;
     }
 
     public PBAnalysis getAnalysis() {
@@ -254,15 +278,16 @@ public class PBBurst implements Serializable {
     public String toString() {
         return "PBBurst{" +
             "id=" + getId() +
-            ", duration='" + getDuration() + "'" +
-            ", pauseDuration='" + getPauseDuration() + "'" +
+            ", text='" + getText() + "'" +
+            ", pauseDuration=" + getPauseDuration() +
+            ", startTime=" + getStartTime() +
+            ", endTime=" + getEndTime() +
             ", startX=" + getStartX() +
             ", startY=" + getStartY() +
             ", endX=" + getEndX() +
             ", endY=" + getEndY() +
             ", distance=" + getDistance() +
-            ", avgSpeed=" + getAvgSpeed() +
-            ", text='" + getText() + "'" +
+            ", dotCount=" + getDotCount() +
             "}";
     }
 }

@@ -10,7 +10,6 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-import io.github.jhipster.service.filter.DurationFilter;
 
 /**
  * Criteria class for the {@link pt.up.hs.pbanalysis.domain.PBBurst} entity. This class is used
@@ -27,23 +26,25 @@ public class PBBurstCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
-    private DurationFilter duration;
+    private StringFilter text;
 
-    private DurationFilter pauseDuration;
+    private LongFilter pauseDuration;
 
-    private IntegerFilter startX;
+    private LongFilter startTime;
 
-    private IntegerFilter startY;
+    private LongFilter endTime;
 
-    private IntegerFilter endX;
+    private DoubleFilter startX;
 
-    private IntegerFilter endY;
+    private DoubleFilter startY;
+
+    private DoubleFilter endX;
+
+    private DoubleFilter endY;
 
     private DoubleFilter distance;
 
-    private DoubleFilter avgSpeed;
-
-    private StringFilter text;
+    private IntegerFilter dotCount;
 
     private LongFilter analysisId;
 
@@ -52,15 +53,16 @@ public class PBBurstCriteria implements Serializable, Criteria {
 
     public PBBurstCriteria(PBBurstCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
-        this.duration = other.duration == null ? null : other.duration.copy();
+        this.text = other.text == null ? null : other.text.copy();
         this.pauseDuration = other.pauseDuration == null ? null : other.pauseDuration.copy();
+        this.startTime = other.startTime == null ? null : other.startTime.copy();
+        this.endTime = other.endTime == null ? null : other.endTime.copy();
         this.startX = other.startX == null ? null : other.startX.copy();
         this.startY = other.startY == null ? null : other.startY.copy();
         this.endX = other.endX == null ? null : other.endX.copy();
         this.endY = other.endY == null ? null : other.endY.copy();
         this.distance = other.distance == null ? null : other.distance.copy();
-        this.avgSpeed = other.avgSpeed == null ? null : other.avgSpeed.copy();
-        this.text = other.text == null ? null : other.text.copy();
+        this.dotCount = other.dotCount == null ? null : other.dotCount.copy();
         this.analysisId = other.analysisId == null ? null : other.analysisId.copy();
     }
 
@@ -77,51 +79,67 @@ public class PBBurstCriteria implements Serializable, Criteria {
         this.id = id;
     }
 
-    public DurationFilter getDuration() {
-        return duration;
+    public StringFilter getText() {
+        return text;
     }
 
-    public void setDuration(DurationFilter duration) {
-        this.duration = duration;
+    public void setText(StringFilter text) {
+        this.text = text;
     }
 
-    public DurationFilter getPauseDuration() {
+    public LongFilter getPauseDuration() {
         return pauseDuration;
     }
 
-    public void setPauseDuration(DurationFilter pauseDuration) {
+    public void setPauseDuration(LongFilter pauseDuration) {
         this.pauseDuration = pauseDuration;
     }
 
-    public IntegerFilter getStartX() {
+    public LongFilter getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LongFilter startTime) {
+        this.startTime = startTime;
+    }
+
+    public LongFilter getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LongFilter endTime) {
+        this.endTime = endTime;
+    }
+
+    public DoubleFilter getStartX() {
         return startX;
     }
 
-    public void setStartX(IntegerFilter startX) {
+    public void setStartX(DoubleFilter startX) {
         this.startX = startX;
     }
 
-    public IntegerFilter getStartY() {
+    public DoubleFilter getStartY() {
         return startY;
     }
 
-    public void setStartY(IntegerFilter startY) {
+    public void setStartY(DoubleFilter startY) {
         this.startY = startY;
     }
 
-    public IntegerFilter getEndX() {
+    public DoubleFilter getEndX() {
         return endX;
     }
 
-    public void setEndX(IntegerFilter endX) {
+    public void setEndX(DoubleFilter endX) {
         this.endX = endX;
     }
 
-    public IntegerFilter getEndY() {
+    public DoubleFilter getEndY() {
         return endY;
     }
 
-    public void setEndY(IntegerFilter endY) {
+    public void setEndY(DoubleFilter endY) {
         this.endY = endY;
     }
 
@@ -133,20 +151,12 @@ public class PBBurstCriteria implements Serializable, Criteria {
         this.distance = distance;
     }
 
-    public DoubleFilter getAvgSpeed() {
-        return avgSpeed;
+    public IntegerFilter getDotCount() {
+        return dotCount;
     }
 
-    public void setAvgSpeed(DoubleFilter avgSpeed) {
-        this.avgSpeed = avgSpeed;
-    }
-
-    public StringFilter getText() {
-        return text;
-    }
-
-    public void setText(StringFilter text) {
-        this.text = text;
+    public void setDotCount(IntegerFilter dotCount) {
+        this.dotCount = dotCount;
     }
 
     public LongFilter getAnalysisId() {
@@ -169,15 +179,16 @@ public class PBBurstCriteria implements Serializable, Criteria {
         final PBBurstCriteria that = (PBBurstCriteria) o;
         return
             Objects.equals(id, that.id) &&
-            Objects.equals(duration, that.duration) &&
+            Objects.equals(text, that.text) &&
             Objects.equals(pauseDuration, that.pauseDuration) &&
+            Objects.equals(startTime, that.startTime) &&
+            Objects.equals(endTime, that.endTime) &&
             Objects.equals(startX, that.startX) &&
             Objects.equals(startY, that.startY) &&
             Objects.equals(endX, that.endX) &&
             Objects.equals(endY, that.endY) &&
             Objects.equals(distance, that.distance) &&
-            Objects.equals(avgSpeed, that.avgSpeed) &&
-            Objects.equals(text, that.text) &&
+            Objects.equals(dotCount, that.dotCount) &&
             Objects.equals(analysisId, that.analysisId);
     }
 
@@ -185,15 +196,16 @@ public class PBBurstCriteria implements Serializable, Criteria {
     public int hashCode() {
         return Objects.hash(
         id,
-        duration,
+        text,
         pauseDuration,
+        startTime,
+        endTime,
         startX,
         startY,
         endX,
         endY,
         distance,
-        avgSpeed,
-        text,
+        dotCount,
         analysisId
         );
     }
@@ -202,15 +214,16 @@ public class PBBurstCriteria implements Serializable, Criteria {
     public String toString() {
         return "PBBurstCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
-                (duration != null ? "duration=" + duration + ", " : "") +
+                (text != null ? "text=" + text + ", " : "") +
                 (pauseDuration != null ? "pauseDuration=" + pauseDuration + ", " : "") +
+                (startTime != null ? "startTime=" + startTime + ", " : "") +
+                (endTime != null ? "endTime=" + endTime + ", " : "") +
                 (startX != null ? "startX=" + startX + ", " : "") +
                 (startY != null ? "startY=" + startY + ", " : "") +
                 (endX != null ? "endX=" + endX + ", " : "") +
                 (endY != null ? "endY=" + endY + ", " : "") +
                 (distance != null ? "distance=" + distance + ", " : "") +
-                (avgSpeed != null ? "avgSpeed=" + avgSpeed + ", " : "") +
-                (text != null ? "text=" + text + ", " : "") +
+                (dotCount != null ? "dotCount=" + dotCount + ", " : "") +
                 (analysisId != null ? "analysisId=" + analysisId + ", " : "") +
             "}";
     }

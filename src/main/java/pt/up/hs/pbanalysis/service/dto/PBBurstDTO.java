@@ -2,87 +2,97 @@ package pt.up.hs.pbanalysis.service.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.time.Duration;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * A DTO for the {@link pt.up.hs.pbanalysis.domain.PBBurst} entity.
+ *
+ * @author José Carlos Paiva
  */
-@ApiModel(description = "Burst of the pause-burst analysis.\n\n@author José Carlos Paiva")
+@ApiModel(description = "Burst of the pause-burst analysis.")
 public class PBBurstDTO implements Serializable {
 
     private Long id;
 
     /**
-     * Duration of the burst
-     */
-    @NotNull
-    @ApiModelProperty(value = "Duration of the burst", required = true)
-    private Duration duration;
-
-    /**
-     * Duration of the pause
-     */
-    @NotNull
-    @ApiModelProperty(value = "Duration of the pause", required = true)
-    private Duration pauseDuration;
-
-    /**
-     * Start X coordinate of burst
-     */
-    @NotNull
-    @ApiModelProperty(value = "Start X coordinate of burst", required = true)
-    private Integer startX;
-
-    /**
-     * Start Y coordinate of burst
-     */
-    @NotNull
-    @ApiModelProperty(value = "Start Y coordinate of burst", required = true)
-    private Integer startY;
-
-    /**
-     * End X coordinate of burst
-     */
-    @NotNull
-    @ApiModelProperty(value = "End X coordinate of burst", required = true)
-    private Integer endX;
-
-    /**
-     * End Y coordinate of burst
-     */
-    @NotNull
-    @ApiModelProperty(value = "End Y coordinate of burst", required = true)
-    private Integer endY;
-
-    /**
-     * Distance traveled during burst
-     */
-    @NotNull
-    @ApiModelProperty(value = "Distance traveled during burst", required = true)
-    private Double distance;
-
-    /**
-     * Average speed of burst
-     */
-    @NotNull
-    @ApiModelProperty(value = "Average speed of burst", required = true)
-    private Double avgSpeed;
-
-    /**
-     * Text slice written in burst
-     */
-    @ApiModelProperty(value = "Text slice written in burst")
-    private String text;
-
-    /**
      * A burst is part of a Pause-Burst analysis.
      */
     @ApiModelProperty(value = "A burst is part of a Pause-Burst analysis.")
-
     private Long analysisId;
+
+    /**
+     * Duration of the pause that precedes this burst (in ms).
+     */
+    @NotNull
+    @Min(value = 0L)
+    @ApiModelProperty(value = "Duration of the pause that precedes this burst (in ms).")
+    private Long pauseDuration;
+
+    /**
+     * Start time of this burst.
+     */
+    @NotNull
+    @Min(value = 0L)
+    @ApiModelProperty(value = "Start time of this burst.")
+    private Long startTime;
+
+    /**
+     * End time of this burst.
+     */
+    @NotNull
+    @Min(value = 0L)
+    @ApiModelProperty(value = "End time of this burst.")
+    private Long endTime;
+
+    /**
+     * Start position of this burst in X-axis.
+     */
+    @NotNull
+    @ApiModelProperty(value = "Start position of this burst in X-axis.")
+    private Double startX;
+
+    /**
+     * Start position of this burst in Y-axis.
+     */
+    @NotNull
+    @ApiModelProperty(value = "Start position of this burst in Y-axis.")
+    private Double startY;
+
+    /**
+     * End position of this burst in X-axis.
+     */
+    @NotNull
+    @ApiModelProperty(value = "End position of this burst in X-axis.")
+    private Double endX;
+
+    /**
+     * End position of this burst in Y-axis.
+     */
+    @NotNull
+    @ApiModelProperty(value = "End position of this burst in Y-axis.")
+    private Double endY;
+
+    /**
+     * Number of captured dots in this burst.
+     */
+    @NotNull
+    @Min(value = 1)
+    @ApiModelProperty(value = "Number of captured dots in this burst.")
+    private Integer dotCount;
+
+    /**
+     * Distance traveled in this burst.
+     */
+    @ApiModelProperty(value = "Distance traveled in this burst.")
+    private Double distance;
+
+    /**
+     * Text slice written in burst.
+     */
+    @ApiModelProperty(value = "Text slice written in burst.")
+    private String text;
 
     public Long getId() {
         return id;
@@ -92,51 +102,75 @@ public class PBBurstDTO implements Serializable {
         this.id = id;
     }
 
-    public Duration getDuration() {
-        return duration;
+    public Long getAnalysisId() {
+        return analysisId;
     }
 
-    public void setDuration(Duration duration) {
-        this.duration = duration;
+    public void setAnalysisId(Long pBAnalysisId) {
+        this.analysisId = pBAnalysisId;
     }
 
-    public Duration getPauseDuration() {
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public Long getPauseDuration() {
         return pauseDuration;
     }
 
-    public void setPauseDuration(Duration pauseDuration) {
+    public void setPauseDuration(Long pauseDuration) {
         this.pauseDuration = pauseDuration;
     }
 
-    public Integer getStartX() {
+    public Long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+
+    public Long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Long endTime) {
+        this.endTime = endTime;
+    }
+
+    public Double getStartX() {
         return startX;
     }
 
-    public void setStartX(Integer startX) {
+    public void setStartX(Double startX) {
         this.startX = startX;
     }
 
-    public Integer getStartY() {
+    public Double getStartY() {
         return startY;
     }
 
-    public void setStartY(Integer startY) {
+    public void setStartY(Double startY) {
         this.startY = startY;
     }
 
-    public Integer getEndX() {
+    public Double getEndX() {
         return endX;
     }
 
-    public void setEndX(Integer endX) {
+    public void setEndX(Double endX) {
         this.endX = endX;
     }
 
-    public Integer getEndY() {
+    public Double getEndY() {
         return endY;
     }
 
-    public void setEndY(Integer endY) {
+    public void setEndY(Double endY) {
         this.endY = endY;
     }
 
@@ -148,28 +182,12 @@ public class PBBurstDTO implements Serializable {
         this.distance = distance;
     }
 
-    public Double getAvgSpeed() {
-        return avgSpeed;
+    public Integer getDotCount() {
+        return dotCount;
     }
 
-    public void setAvgSpeed(Double avgSpeed) {
-        this.avgSpeed = avgSpeed;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public Long getAnalysisId() {
-        return analysisId;
-    }
-
-    public void setAnalysisId(Long pBAnalysisId) {
-        this.analysisId = pBAnalysisId;
+    public void setDotCount(Integer dotCount) {
+        this.dotCount = dotCount;
     }
 
     @Override
@@ -197,16 +215,17 @@ public class PBBurstDTO implements Serializable {
     public String toString() {
         return "PBBurstDTO{" +
             "id=" + getId() +
-            ", duration='" + getDuration() + "'" +
-            ", pauseDuration='" + getPauseDuration() + "'" +
+            ", analysisId=" + getAnalysisId() +
+            ", text='" + getText() + "'" +
+            ", pauseDuration=" + getPauseDuration() +
+            ", startTime=" + getStartTime() +
+            ", endTime=" + getEndTime() +
             ", startX=" + getStartX() +
             ", startY=" + getStartY() +
             ", endX=" + getEndX() +
             ", endY=" + getEndY() +
             ", distance=" + getDistance() +
-            ", avgSpeed=" + getAvgSpeed() +
-            ", text='" + getText() + "'" +
-            ", analysisId=" + getAnalysisId() +
+            ", dotCount=" + getDotCount() +
             "}";
     }
 }

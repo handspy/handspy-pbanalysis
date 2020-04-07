@@ -2,17 +2,33 @@
     "name": "PBAnalysis",
     "fields": [
         {
-            "fieldName": "sample",
-            "javadoc": "Sample to which the pause-burst analysis belongs",
-            "fieldType": "Long"
-        },
-        {
             "fieldName": "threshold",
             "javadoc": "Threshold used to identify bursts",
             "fieldType": "Long"
+        },
+        {
+            "fieldName": "protocolId",
+            "fieldType": "Long",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "sampleId",
+            "fieldType": "Long",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
-    "relationships": [],
+    "relationships": [
+        {
+            "relationshipName": "bursts",
+            "otherEntityName": "pBBurst",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "analysis"
+        }
+    ],
     "changelogDate": "20200223180718",
     "javadoc": "Analysis of pauses and busts in handwritten data.\\n\\n@author José Carlos Paiva",
     "entityTableName": "pb_analysis",
@@ -22,10 +38,12 @@
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "readOnly": false,
-    "clientRootFolder": "",
+    "clientRootFolder": "pbanalysis",
     "applications": [
         "gateway",
         "pbanalysis"
     ],
-    "microserviceName": "pbanalysis"
+    "microserviceName": "pbanalysis",
+    "searchEngine": false,
+    "databaseType": "sql"
 }

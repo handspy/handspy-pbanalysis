@@ -30,13 +30,13 @@ import java.util.Collection;
 @SpringBootApplication
 @EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
 @EnableDiscoveryClient
-public class PbanalysisApp {
+public class PBAnalysisApp {
 
-    private static final Logger log = LoggerFactory.getLogger(PbanalysisApp.class);
+    private static final Logger log = LoggerFactory.getLogger(PBAnalysisApp.class);
 
     private final Environment env;
 
-    public PbanalysisApp(Environment env) {
+    public PBAnalysisApp(Environment env) {
         this.env = env;
     }
 
@@ -66,7 +66,7 @@ public class PbanalysisApp {
      * @param args the command line arguments.
      */
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(PbanalysisApp.class);
+        SpringApplication app = new SpringApplication(PBAnalysisApp.class);
         DefaultProfileUtil.addDefaultProfile(app);
         Environment env = app.run(args).getEnvironment();
         logApplicationStartup(env);

@@ -91,11 +91,17 @@ public class PBBurstQueryService extends QueryService<PBBurst> {
             if (criteria.getId() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getId(), PBBurst_.id));
             }
-            if (criteria.getDuration() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getDuration(), PBBurst_.duration));
+            if (criteria.getText() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getText(), PBBurst_.text));
             }
             if (criteria.getPauseDuration() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getPauseDuration(), PBBurst_.pauseDuration));
+            }
+            if (criteria.getStartTime() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getStartTime(), PBBurst_.startTime));
+            }
+            if (criteria.getEndTime() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getEndTime(), PBBurst_.endTime));
             }
             if (criteria.getStartX() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getStartX(), PBBurst_.startX));
@@ -112,11 +118,8 @@ public class PBBurstQueryService extends QueryService<PBBurst> {
             if (criteria.getDistance() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getDistance(), PBBurst_.distance));
             }
-            if (criteria.getAvgSpeed() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getAvgSpeed(), PBBurst_.avgSpeed));
-            }
-            if (criteria.getText() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getText(), PBBurst_.text));
+            if (criteria.getDotCount() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getDotCount(), PBBurst_.dotCount));
             }
             if (criteria.getAnalysisId() != null) {
                 specification = specification.and(buildSpecification(criteria.getAnalysisId(),

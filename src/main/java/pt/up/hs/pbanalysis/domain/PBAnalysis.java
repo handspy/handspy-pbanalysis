@@ -4,11 +4,16 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Analysis of pauses and busts in handwritten data.\n\n@author José Carlos Paiva
+ * Analysis of pauses and busts in handwritten data.
+ *
+ * @author José Carlos Paiva
  */
 @Entity
 @Table(name = "pb_analysis")
@@ -23,16 +28,29 @@ public class PBAnalysis implements Serializable {
     private Long id;
 
     /**
-     * Sample to which the pause-burst analysis belongs
+     * ID of the sample on which this analysis has been conducted.
      */
-    @Column(name = "sample")
-    private Long sample;
+    @NotNull
+    @Column(name = "sample_id", nullable = false)
+    private Long sampleId;
 
     /**
-     * Threshold used to identify bursts
+     * ID of the protocol on which this analysis has been conducted.
      */
-    @Column(name = "threshold")
+    @NotNull
+    @Column(name = "protocol_id", nullable = false)
+    private Long protocolId;
+
+    /**
+     * Threshold used to calculate bursts (in ms).
+     */
+    @NotNull
+    @Column(name = "threshold", nullable = false)
     private Long threshold;
+
+    @OneToMany(mappedBy = "analysis")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<PBBurst> bursts = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -41,19 +59,6 @@ public class PBAnalysis implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getSample() {
-        return sample;
-    }
-
-    public PBAnalysis sample(Long sample) {
-        this.sample = sample;
-        return this;
-    }
-
-    public void setSample(Long sample) {
-        this.sample = sample;
     }
 
     public Long getThreshold() {
@@ -67,6 +72,57 @@ public class PBAnalysis implements Serializable {
 
     public void setThreshold(Long threshold) {
         this.threshold = threshold;
+    }
+
+    public Long getProtocolId() {
+        return protocolId;
+    }
+
+    public PBAnalysis protocolId(Long protocolId) {
+        this.protocolId = protocolId;
+        return this;
+    }
+
+    public void setProtocolId(Long protocolId) {
+        this.protocolId = protocolId;
+    }
+
+    public Long getSampleId() {
+        return sampleId;
+    }
+
+    public PBAnalysis sampleId(Long sampleId) {
+        this.sampleId = sampleId;
+        return this;
+    }
+
+    public void setSampleId(Long sampleId) {
+        this.sampleId = sampleId;
+    }
+
+    public Set<PBBurst> getBursts() {
+        return bursts;
+    }
+
+    public PBAnalysis bursts(Set<PBBurst> pBBursts) {
+        this.bursts = pBBursts;
+        return this;
+    }
+
+    public PBAnalysis addBursts(PBBurst pBBurst) {
+        this.bursts.add(pBBurst);
+        pBBurst.setAnalysis(this);
+        return this;
+    }
+
+    public PBAnalysis removeBursts(PBBurst pBBurst) {
+        this.bursts.remove(pBBurst);
+        pBBurst.setAnalysis(null);
+        return this;
+    }
+
+    public void setBursts(Set<PBBurst> pBBursts) {
+        this.bursts = pBBursts;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -90,7 +146,8 @@ public class PBAnalysis implements Serializable {
     public String toString() {
         return "PBAnalysis{" +
             "id=" + getId() +
-            ", sample=" + getSample() +
+            ", protocolId=" + getProtocolId() +
+            ", sampleId=" + getSampleId() +
             ", threshold=" + getThreshold() +
             "}";
     }

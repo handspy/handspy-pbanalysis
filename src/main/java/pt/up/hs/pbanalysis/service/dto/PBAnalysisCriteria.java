@@ -26,17 +26,17 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
-    private LongFilter sample;
-
     private LongFilter threshold;
+
+    private LongFilter burstsId;
 
     public PBAnalysisCriteria() {
     }
 
     public PBAnalysisCriteria(PBAnalysisCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
-        this.sample = other.sample == null ? null : other.sample.copy();
         this.threshold = other.threshold == null ? null : other.threshold.copy();
+        this.burstsId = other.burstsId == null ? null : other.burstsId.copy();
     }
 
     @Override
@@ -52,20 +52,20 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
         this.id = id;
     }
 
-    public LongFilter getSample() {
-        return sample;
-    }
-
-    public void setSample(LongFilter sample) {
-        this.sample = sample;
-    }
-
     public LongFilter getThreshold() {
         return threshold;
     }
 
     public void setThreshold(LongFilter threshold) {
         this.threshold = threshold;
+    }
+
+    public LongFilter getBurstsId() {
+        return burstsId;
+    }
+
+    public void setBurstsId(LongFilter burstsId) {
+        this.burstsId = burstsId;
     }
 
 
@@ -80,16 +80,16 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
         final PBAnalysisCriteria that = (PBAnalysisCriteria) o;
         return
             Objects.equals(id, that.id) &&
-            Objects.equals(sample, that.sample) &&
-            Objects.equals(threshold, that.threshold);
+            Objects.equals(threshold, that.threshold) &&
+            Objects.equals(burstsId, that.burstsId);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
         id,
-        sample,
-        threshold
+        threshold,
+        burstsId
         );
     }
 
@@ -97,8 +97,8 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
     public String toString() {
         return "PBAnalysisCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
-                (sample != null ? "sample=" + sample + ", " : "") +
                 (threshold != null ? "threshold=" + threshold + ", " : "") +
+                (burstsId != null ? "burstsId=" + burstsId + ", " : "") +
             "}";
     }
 

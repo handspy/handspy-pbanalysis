@@ -2,73 +2,77 @@
     "name": "PBBurst",
     "fields": [
         {
-            "fieldName": "duration",
-            "javadoc": "Duration of the burst",
-            "fieldType": "Duration",
-            "fieldValidateRules": [
-                "required"
-            ]
+            "fieldName": "text",
+            "javadoc": "Text slice written in burst",
+            "fieldType": "String"
         },
         {
             "fieldName": "pauseDuration",
-            "javadoc": "Duration of the pause",
-            "fieldType": "Duration",
+            "fieldType": "Long",
             "fieldValidateRules": [
-                "required"
-            ]
+                "required",
+                "min"
+            ],
+            "fieldValidateRulesMin": 0
+        },
+        {
+            "fieldName": "startTime",
+            "fieldType": "Long",
+            "fieldValidateRules": [
+                "required",
+                "min"
+            ],
+            "fieldValidateRulesMin": 0
+        },
+        {
+            "fieldName": "endTime",
+            "fieldType": "Long",
+            "fieldValidateRules": [
+                "required",
+                "min"
+            ],
+            "fieldValidateRulesMin": 0
         },
         {
             "fieldName": "startX",
-            "javadoc": "Start X coordinate of burst",
-            "fieldType": "Integer",
+            "fieldType": "Double",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
             "fieldName": "startY",
-            "javadoc": "Start Y coordinate of burst",
-            "fieldType": "Integer",
+            "fieldType": "Double",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
             "fieldName": "endX",
-            "javadoc": "End X coordinate of burst",
-            "fieldType": "Integer",
+            "fieldType": "Double",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
             "fieldName": "endY",
-            "javadoc": "End Y coordinate of burst",
-            "fieldType": "Integer",
+            "fieldType": "Double",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
             "fieldName": "distance",
-            "javadoc": "Distance traveled during burst",
-            "fieldType": "Double",
-            "fieldValidateRules": [
-                "required"
-            ]
+            "fieldType": "Double"
         },
         {
-            "fieldName": "avgSpeed",
-            "javadoc": "Average speed of burst",
-            "fieldType": "Double",
+            "fieldName": "dotCount",
+            "fieldType": "Integer",
             "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "text",
-            "javadoc": "Text slice written in burst",
-            "fieldType": "String"
+                "required",
+                "min"
+            ],
+            "fieldValidateRulesMin": "1"
         }
     ],
     "relationships": [
@@ -90,10 +94,12 @@
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "readOnly": false,
-    "clientRootFolder": "",
+    "clientRootFolder": "pbanalysis",
     "applications": [
         "gateway",
         "pbanalysis"
     ],
-    "microserviceName": "pbanalysis"
+    "microserviceName": "pbanalysis",
+    "searchEngine": false,
+    "databaseType": "sql"
 }

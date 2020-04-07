@@ -1,6 +1,6 @@
 package pt.up.hs.pbanalysis.web.rest.errors;
 
-import pt.up.hs.pbanalysis.PbanalysisApp;
+import pt.up.hs.pbanalysis.PBAnalysisApp;
 import pt.up.hs.pbanalysis.config.SecurityBeanOverrideConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WithMockUser
 @AutoConfigureMockMvc
-@SpringBootTest(classes = {SecurityBeanOverrideConfiguration.class, PbanalysisApp.class})
+@SpringBootTest(classes = {SecurityBeanOverrideConfiguration.class, PBAnalysisApp.class})
 public class ExceptionTranslatorIT {
 
     @Autowired

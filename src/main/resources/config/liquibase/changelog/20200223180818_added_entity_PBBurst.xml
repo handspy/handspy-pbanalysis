@@ -15,32 +15,35 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="duration" type="bigint" remarks="Duration of the burst">
-                <constraints nullable="false" />
-            </column>
-            <column name="pause_duration" type="bigint" remarks="Duration of the pause">
-                <constraints nullable="false" />
-            </column>
-            <column name="start_x" type="integer" remarks="Start X coordinate of burst">
-                <constraints nullable="false" />
-            </column>
-            <column name="start_y" type="integer" remarks="Start Y coordinate of burst">
-                <constraints nullable="false" />
-            </column>
-            <column name="end_x" type="integer" remarks="End X coordinate of burst">
-                <constraints nullable="false" />
-            </column>
-            <column name="end_y" type="integer" remarks="End Y coordinate of burst">
-                <constraints nullable="false" />
-            </column>
-            <column name="distance" type="double" remarks="Distance traveled during burst">
-                <constraints nullable="false" />
-            </column>
-            <column name="avg_speed" type="double" remarks="Average speed of burst">
-                <constraints nullable="false" />
-            </column>
             <column name="text" type="varchar(255)" remarks="Text slice written in burst">
                 <constraints nullable="true" />
+            </column>
+            <column name="pause_duration" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="start_time" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="end_time" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="start_x" type="double">
+                <constraints nullable="false" />
+            </column>
+            <column name="start_y" type="double">
+                <constraints nullable="false" />
+            </column>
+            <column name="end_x" type="double">
+                <constraints nullable="false" />
+            </column>
+            <column name="end_y" type="double">
+                <constraints nullable="false" />
+            </column>
+            <column name="distance" type="double">
+                <constraints nullable="true" />
+            </column>
+            <column name="dot_count" type="integer">
+                <constraints nullable="false" />
             </column>
             <column name="analysis_id" type="bigint">
                 <constraints nullable="true" />
@@ -68,15 +71,16 @@
                   separator=";"
                   tableName="pb_burst">
             <column name="id" type="numeric"/>
-            <column name="duration" type="numeric"/>
+            <column name="text" type="string"/>
             <column name="pause_duration" type="numeric"/>
+            <column name="start_time" type="numeric"/>
+            <column name="end_time" type="numeric"/>
             <column name="start_x" type="numeric"/>
             <column name="start_y" type="numeric"/>
             <column name="end_x" type="numeric"/>
             <column name="end_y" type="numeric"/>
             <column name="distance" type="numeric"/>
-            <column name="avg_speed" type="numeric"/>
-            <column name="text" type="string"/>
+            <column name="dot_count" type="numeric"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here, do not remove-->
         </loadData>
     </changeSet>

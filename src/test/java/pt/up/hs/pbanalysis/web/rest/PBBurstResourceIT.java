@@ -1,6 +1,6 @@
 package pt.up.hs.pbanalysis.web.rest;
 
-import pt.up.hs.pbanalysis.PbanalysisApp;
+import pt.up.hs.pbanalysis.PBAnalysisApp;
 import pt.up.hs.pbanalysis.config.SecurityBeanOverrideConfiguration;
 import pt.up.hs.pbanalysis.domain.PBBurst;
 import pt.up.hs.pbanalysis.domain.PBAnalysis;
@@ -9,7 +9,6 @@ import pt.up.hs.pbanalysis.service.PBBurstService;
 import pt.up.hs.pbanalysis.service.dto.PBBurstDTO;
 import pt.up.hs.pbanalysis.service.mapper.PBBurstMapper;
 import pt.up.hs.pbanalysis.web.rest.errors.ExceptionTranslator;
-import pt.up.hs.pbanalysis.service.dto.PBBurstCriteria;
 import pt.up.hs.pbanalysis.service.PBBurstQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
-import java.time.Duration;
 import java.util.List;
 
 import static pt.up.hs.pbanalysis.web.rest.TestUtil.createFormattingConversionService;
@@ -38,43 +36,47 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Integration tests for the {@link PBBurstResource} REST controller.
  */
-@SpringBootTest(classes = {SecurityBeanOverrideConfiguration.class, PbanalysisApp.class})
+@SpringBootTest(classes = {SecurityBeanOverrideConfiguration.class, PBAnalysisApp.class})
 public class PBBurstResourceIT {
 
-    private static final Duration DEFAULT_DURATION = Duration.ofHours(6);
-    private static final Duration UPDATED_DURATION = Duration.ofHours(12);
-    private static final Duration SMALLER_DURATION = Duration.ofHours(5);
+    private static final String DEFAULT_TEXT = "AAAAAAAAAA";
+    private static final String UPDATED_TEXT = "BBBBBBBBBB";
 
-    private static final Duration DEFAULT_PAUSE_DURATION = Duration.ofHours(6);
-    private static final Duration UPDATED_PAUSE_DURATION = Duration.ofHours(12);
-    private static final Duration SMALLER_PAUSE_DURATION = Duration.ofHours(5);
+    private static final Long DEFAULT_PAUSE_DURATION = 0L;
+    private static final Long UPDATED_PAUSE_DURATION = 1L;
+    private static final Long SMALLER_PAUSE_DURATION = 0L - 1L;
 
-    private static final Integer DEFAULT_START_X = 1;
-    private static final Integer UPDATED_START_X = 2;
-    private static final Integer SMALLER_START_X = 1 - 1;
+    private static final Long DEFAULT_START_TIME = 0L;
+    private static final Long UPDATED_START_TIME = 1L;
+    private static final Long SMALLER_START_TIME = 0L - 1L;
 
-    private static final Integer DEFAULT_START_Y = 1;
-    private static final Integer UPDATED_START_Y = 2;
-    private static final Integer SMALLER_START_Y = 1 - 1;
+    private static final Long DEFAULT_END_TIME = 0L;
+    private static final Long UPDATED_END_TIME = 1L;
+    private static final Long SMALLER_END_TIME = 0L - 1L;
 
-    private static final Integer DEFAULT_END_X = 1;
-    private static final Integer UPDATED_END_X = 2;
-    private static final Integer SMALLER_END_X = 1 - 1;
+    private static final Double DEFAULT_START_X = 1D;
+    private static final Double UPDATED_START_X = 2D;
+    private static final Double SMALLER_START_X = 1D - 1D;
 
-    private static final Integer DEFAULT_END_Y = 1;
-    private static final Integer UPDATED_END_Y = 2;
-    private static final Integer SMALLER_END_Y = 1 - 1;
+    private static final Double DEFAULT_START_Y = 1D;
+    private static final Double UPDATED_START_Y = 2D;
+    private static final Double SMALLER_START_Y = 1D - 1D;
+
+    private static final Double DEFAULT_END_X = 1D;
+    private static final Double UPDATED_END_X = 2D;
+    private static final Double SMALLER_END_X = 1D - 1D;
+
+    private static final Double DEFAULT_END_Y = 1D;
+    private static final Double UPDATED_END_Y = 2D;
+    private static final Double SMALLER_END_Y = 1D - 1D;
 
     private static final Double DEFAULT_DISTANCE = 1D;
     private static final Double UPDATED_DISTANCE = 2D;
     private static final Double SMALLER_DISTANCE = 1D - 1D;
 
-    private static final Double DEFAULT_AVG_SPEED = 1D;
-    private static final Double UPDATED_AVG_SPEED = 2D;
-    private static final Double SMALLER_AVG_SPEED = 1D - 1D;
-
-    private static final String DEFAULT_TEXT = "AAAAAAAAAA";
-    private static final String UPDATED_TEXT = "BBBBBBBBBB";
+    private static final Integer DEFAULT_DOT_COUNT = 1;
+    private static final Integer UPDATED_DOT_COUNT = 2;
+    private static final Integer SMALLER_DOT_COUNT = 1 - 1;
 
     @Autowired
     private PBBurstRepository pBBurstRepository;
@@ -127,15 +129,16 @@ public class PBBurstResourceIT {
      */
     public static PBBurst createEntity(EntityManager em) {
         PBBurst pBBurst = new PBBurst()
-            .duration(DEFAULT_DURATION)
+            .text(DEFAULT_TEXT)
             .pauseDuration(DEFAULT_PAUSE_DURATION)
+            .startTime(DEFAULT_START_TIME)
+            .endTime(DEFAULT_END_TIME)
             .startX(DEFAULT_START_X)
             .startY(DEFAULT_START_Y)
             .endX(DEFAULT_END_X)
             .endY(DEFAULT_END_Y)
             .distance(DEFAULT_DISTANCE)
-            .avgSpeed(DEFAULT_AVG_SPEED)
-            .text(DEFAULT_TEXT);
+            .dotCount(DEFAULT_DOT_COUNT);
         return pBBurst;
     }
     /**
@@ -146,15 +149,16 @@ public class PBBurstResourceIT {
      */
     public static PBBurst createUpdatedEntity(EntityManager em) {
         PBBurst pBBurst = new PBBurst()
-            .duration(UPDATED_DURATION)
+            .text(UPDATED_TEXT)
             .pauseDuration(UPDATED_PAUSE_DURATION)
+            .startTime(UPDATED_START_TIME)
+            .endTime(UPDATED_END_TIME)
             .startX(UPDATED_START_X)
             .startY(UPDATED_START_Y)
             .endX(UPDATED_END_X)
             .endY(UPDATED_END_Y)
             .distance(UPDATED_DISTANCE)
-            .avgSpeed(UPDATED_AVG_SPEED)
-            .text(UPDATED_TEXT);
+            .dotCount(UPDATED_DOT_COUNT);
         return pBBurst;
     }
 
@@ -179,15 +183,16 @@ public class PBBurstResourceIT {
         List<PBBurst> pBBurstList = pBBurstRepository.findAll();
         assertThat(pBBurstList).hasSize(databaseSizeBeforeCreate + 1);
         PBBurst testPBBurst = pBBurstList.get(pBBurstList.size() - 1);
-        assertThat(testPBBurst.getDuration()).isEqualTo(DEFAULT_DURATION);
+        assertThat(testPBBurst.getText()).isEqualTo(DEFAULT_TEXT);
         assertThat(testPBBurst.getPauseDuration()).isEqualTo(DEFAULT_PAUSE_DURATION);
+        assertThat(testPBBurst.getStartTime()).isEqualTo(DEFAULT_START_TIME);
+        assertThat(testPBBurst.getEndTime()).isEqualTo(DEFAULT_END_TIME);
         assertThat(testPBBurst.getStartX()).isEqualTo(DEFAULT_START_X);
         assertThat(testPBBurst.getStartY()).isEqualTo(DEFAULT_START_Y);
         assertThat(testPBBurst.getEndX()).isEqualTo(DEFAULT_END_X);
         assertThat(testPBBurst.getEndY()).isEqualTo(DEFAULT_END_Y);
         assertThat(testPBBurst.getDistance()).isEqualTo(DEFAULT_DISTANCE);
-        assertThat(testPBBurst.getAvgSpeed()).isEqualTo(DEFAULT_AVG_SPEED);
-        assertThat(testPBBurst.getText()).isEqualTo(DEFAULT_TEXT);
+        assertThat(testPBBurst.getDotCount()).isEqualTo(DEFAULT_DOT_COUNT);
     }
 
     @Test
@@ -213,10 +218,10 @@ public class PBBurstResourceIT {
 
     @Test
     @Transactional
-    public void checkDurationIsRequired() throws Exception {
+    public void checkPauseDurationIsRequired() throws Exception {
         int databaseSizeBeforeTest = pBBurstRepository.findAll().size();
         // set the field null
-        pBBurst.setDuration(null);
+        pBBurst.setPauseDuration(null);
 
         // Create the PBBurst, which fails.
         PBBurstDTO pBBurstDTO = pBBurstMapper.toDto(pBBurst);
@@ -232,10 +237,29 @@ public class PBBurstResourceIT {
 
     @Test
     @Transactional
-    public void checkPauseDurationIsRequired() throws Exception {
+    public void checkStartTimeIsRequired() throws Exception {
         int databaseSizeBeforeTest = pBBurstRepository.findAll().size();
         // set the field null
-        pBBurst.setPauseDuration(null);
+        pBBurst.setStartTime(null);
+
+        // Create the PBBurst, which fails.
+        PBBurstDTO pBBurstDTO = pBBurstMapper.toDto(pBBurst);
+
+        restPBBurstMockMvc.perform(post("/api/pb-bursts")
+            .contentType(TestUtil.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(pBBurstDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<PBBurst> pBBurstList = pBBurstRepository.findAll();
+        assertThat(pBBurstList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkEndTimeIsRequired() throws Exception {
+        int databaseSizeBeforeTest = pBBurstRepository.findAll().size();
+        // set the field null
+        pBBurst.setEndTime(null);
 
         // Create the PBBurst, which fails.
         PBBurstDTO pBBurstDTO = pBBurstMapper.toDto(pBBurst);
@@ -327,29 +351,10 @@ public class PBBurstResourceIT {
 
     @Test
     @Transactional
-    public void checkDistanceIsRequired() throws Exception {
+    public void checkDotCountIsRequired() throws Exception {
         int databaseSizeBeforeTest = pBBurstRepository.findAll().size();
         // set the field null
-        pBBurst.setDistance(null);
-
-        // Create the PBBurst, which fails.
-        PBBurstDTO pBBurstDTO = pBBurstMapper.toDto(pBBurst);
-
-        restPBBurstMockMvc.perform(post("/api/pb-bursts")
-            .contentType(TestUtil.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(pBBurstDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<PBBurst> pBBurstList = pBBurstRepository.findAll();
-        assertThat(pBBurstList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkAvgSpeedIsRequired() throws Exception {
-        int databaseSizeBeforeTest = pBBurstRepository.findAll().size();
-        // set the field null
-        pBBurst.setAvgSpeed(null);
+        pBBurst.setDotCount(null);
 
         // Create the PBBurst, which fails.
         PBBurstDTO pBBurstDTO = pBBurstMapper.toDto(pBBurst);
@@ -374,17 +379,18 @@ public class PBBurstResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(pBBurst.getId().intValue())))
-            .andExpect(jsonPath("$.[*].duration").value(hasItem(DEFAULT_DURATION.toString())))
-            .andExpect(jsonPath("$.[*].pauseDuration").value(hasItem(DEFAULT_PAUSE_DURATION.toString())))
-            .andExpect(jsonPath("$.[*].startX").value(hasItem(DEFAULT_START_X)))
-            .andExpect(jsonPath("$.[*].startY").value(hasItem(DEFAULT_START_Y)))
-            .andExpect(jsonPath("$.[*].endX").value(hasItem(DEFAULT_END_X)))
-            .andExpect(jsonPath("$.[*].endY").value(hasItem(DEFAULT_END_Y)))
+            .andExpect(jsonPath("$.[*].text").value(hasItem(DEFAULT_TEXT)))
+            .andExpect(jsonPath("$.[*].pauseDuration").value(hasItem(DEFAULT_PAUSE_DURATION.intValue())))
+            .andExpect(jsonPath("$.[*].startTime").value(hasItem(DEFAULT_START_TIME.intValue())))
+            .andExpect(jsonPath("$.[*].endTime").value(hasItem(DEFAULT_END_TIME.intValue())))
+            .andExpect(jsonPath("$.[*].startX").value(hasItem(DEFAULT_START_X.doubleValue())))
+            .andExpect(jsonPath("$.[*].startY").value(hasItem(DEFAULT_START_Y.doubleValue())))
+            .andExpect(jsonPath("$.[*].endX").value(hasItem(DEFAULT_END_X.doubleValue())))
+            .andExpect(jsonPath("$.[*].endY").value(hasItem(DEFAULT_END_Y.doubleValue())))
             .andExpect(jsonPath("$.[*].distance").value(hasItem(DEFAULT_DISTANCE.doubleValue())))
-            .andExpect(jsonPath("$.[*].avgSpeed").value(hasItem(DEFAULT_AVG_SPEED.doubleValue())))
-            .andExpect(jsonPath("$.[*].text").value(hasItem(DEFAULT_TEXT)));
+            .andExpect(jsonPath("$.[*].dotCount").value(hasItem(DEFAULT_DOT_COUNT)));
     }
-    
+
     @Test
     @Transactional
     public void getPBBurst() throws Exception {
@@ -396,15 +402,16 @@ public class PBBurstResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(pBBurst.getId().intValue()))
-            .andExpect(jsonPath("$.duration").value(DEFAULT_DURATION.toString()))
-            .andExpect(jsonPath("$.pauseDuration").value(DEFAULT_PAUSE_DURATION.toString()))
-            .andExpect(jsonPath("$.startX").value(DEFAULT_START_X))
-            .andExpect(jsonPath("$.startY").value(DEFAULT_START_Y))
-            .andExpect(jsonPath("$.endX").value(DEFAULT_END_X))
-            .andExpect(jsonPath("$.endY").value(DEFAULT_END_Y))
+            .andExpect(jsonPath("$.text").value(DEFAULT_TEXT))
+            .andExpect(jsonPath("$.pauseDuration").value(DEFAULT_PAUSE_DURATION.intValue()))
+            .andExpect(jsonPath("$.startTime").value(DEFAULT_START_TIME.intValue()))
+            .andExpect(jsonPath("$.endTime").value(DEFAULT_END_TIME.intValue()))
+            .andExpect(jsonPath("$.startX").value(DEFAULT_START_X.doubleValue()))
+            .andExpect(jsonPath("$.startY").value(DEFAULT_START_Y.doubleValue()))
+            .andExpect(jsonPath("$.endX").value(DEFAULT_END_X.doubleValue()))
+            .andExpect(jsonPath("$.endY").value(DEFAULT_END_Y.doubleValue()))
             .andExpect(jsonPath("$.distance").value(DEFAULT_DISTANCE.doubleValue()))
-            .andExpect(jsonPath("$.avgSpeed").value(DEFAULT_AVG_SPEED.doubleValue()))
-            .andExpect(jsonPath("$.text").value(DEFAULT_TEXT));
+            .andExpect(jsonPath("$.dotCount").value(DEFAULT_DOT_COUNT));
     }
 
 
@@ -429,106 +436,79 @@ public class PBBurstResourceIT {
 
     @Test
     @Transactional
-    public void getAllPBBurstsByDurationIsEqualToSomething() throws Exception {
+    public void getAllPBBurstsByTextIsEqualToSomething() throws Exception {
         // Initialize the database
         pBBurstRepository.saveAndFlush(pBBurst);
 
-        // Get all the pBBurstList where duration equals to DEFAULT_DURATION
-        defaultPBBurstShouldBeFound("duration.equals=" + DEFAULT_DURATION);
+        // Get all the pBBurstList where text equals to DEFAULT_TEXT
+        defaultPBBurstShouldBeFound("text.equals=" + DEFAULT_TEXT);
 
-        // Get all the pBBurstList where duration equals to UPDATED_DURATION
-        defaultPBBurstShouldNotBeFound("duration.equals=" + UPDATED_DURATION);
+        // Get all the pBBurstList where text equals to UPDATED_TEXT
+        defaultPBBurstShouldNotBeFound("text.equals=" + UPDATED_TEXT);
     }
 
     @Test
     @Transactional
-    public void getAllPBBurstsByDurationIsNotEqualToSomething() throws Exception {
+    public void getAllPBBurstsByTextIsNotEqualToSomething() throws Exception {
         // Initialize the database
         pBBurstRepository.saveAndFlush(pBBurst);
 
-        // Get all the pBBurstList where duration not equals to DEFAULT_DURATION
-        defaultPBBurstShouldNotBeFound("duration.notEquals=" + DEFAULT_DURATION);
+        // Get all the pBBurstList where text not equals to DEFAULT_TEXT
+        defaultPBBurstShouldNotBeFound("text.notEquals=" + DEFAULT_TEXT);
 
-        // Get all the pBBurstList where duration not equals to UPDATED_DURATION
-        defaultPBBurstShouldBeFound("duration.notEquals=" + UPDATED_DURATION);
+        // Get all the pBBurstList where text not equals to UPDATED_TEXT
+        defaultPBBurstShouldBeFound("text.notEquals=" + UPDATED_TEXT);
     }
 
     @Test
     @Transactional
-    public void getAllPBBurstsByDurationIsInShouldWork() throws Exception {
+    public void getAllPBBurstsByTextIsInShouldWork() throws Exception {
         // Initialize the database
         pBBurstRepository.saveAndFlush(pBBurst);
 
-        // Get all the pBBurstList where duration in DEFAULT_DURATION or UPDATED_DURATION
-        defaultPBBurstShouldBeFound("duration.in=" + DEFAULT_DURATION + "," + UPDATED_DURATION);
+        // Get all the pBBurstList where text in DEFAULT_TEXT or UPDATED_TEXT
+        defaultPBBurstShouldBeFound("text.in=" + DEFAULT_TEXT + "," + UPDATED_TEXT);
 
-        // Get all the pBBurstList where duration equals to UPDATED_DURATION
-        defaultPBBurstShouldNotBeFound("duration.in=" + UPDATED_DURATION);
+        // Get all the pBBurstList where text equals to UPDATED_TEXT
+        defaultPBBurstShouldNotBeFound("text.in=" + UPDATED_TEXT);
     }
 
     @Test
     @Transactional
-    public void getAllPBBurstsByDurationIsNullOrNotNull() throws Exception {
+    public void getAllPBBurstsByTextIsNullOrNotNull() throws Exception {
         // Initialize the database
         pBBurstRepository.saveAndFlush(pBBurst);
 
-        // Get all the pBBurstList where duration is not null
-        defaultPBBurstShouldBeFound("duration.specified=true");
+        // Get all the pBBurstList where text is not null
+        defaultPBBurstShouldBeFound("text.specified=true");
 
-        // Get all the pBBurstList where duration is null
-        defaultPBBurstShouldNotBeFound("duration.specified=false");
+        // Get all the pBBurstList where text is null
+        defaultPBBurstShouldNotBeFound("text.specified=false");
+    }
+                @Test
+    @Transactional
+    public void getAllPBBurstsByTextContainsSomething() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where text contains DEFAULT_TEXT
+        defaultPBBurstShouldBeFound("text.contains=" + DEFAULT_TEXT);
+
+        // Get all the pBBurstList where text contains UPDATED_TEXT
+        defaultPBBurstShouldNotBeFound("text.contains=" + UPDATED_TEXT);
     }
 
     @Test
     @Transactional
-    public void getAllPBBurstsByDurationIsGreaterThanOrEqualToSomething() throws Exception {
+    public void getAllPBBurstsByTextNotContainsSomething() throws Exception {
         // Initialize the database
         pBBurstRepository.saveAndFlush(pBBurst);
 
-        // Get all the pBBurstList where duration is greater than or equal to DEFAULT_DURATION
-        defaultPBBurstShouldBeFound("duration.greaterThanOrEqual=" + DEFAULT_DURATION);
+        // Get all the pBBurstList where text does not contain DEFAULT_TEXT
+        defaultPBBurstShouldNotBeFound("text.doesNotContain=" + DEFAULT_TEXT);
 
-        // Get all the pBBurstList where duration is greater than or equal to UPDATED_DURATION
-        defaultPBBurstShouldNotBeFound("duration.greaterThanOrEqual=" + UPDATED_DURATION);
-    }
-
-    @Test
-    @Transactional
-    public void getAllPBBurstsByDurationIsLessThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        pBBurstRepository.saveAndFlush(pBBurst);
-
-        // Get all the pBBurstList where duration is less than or equal to DEFAULT_DURATION
-        defaultPBBurstShouldBeFound("duration.lessThanOrEqual=" + DEFAULT_DURATION);
-
-        // Get all the pBBurstList where duration is less than or equal to SMALLER_DURATION
-        defaultPBBurstShouldNotBeFound("duration.lessThanOrEqual=" + SMALLER_DURATION);
-    }
-
-    @Test
-    @Transactional
-    public void getAllPBBurstsByDurationIsLessThanSomething() throws Exception {
-        // Initialize the database
-        pBBurstRepository.saveAndFlush(pBBurst);
-
-        // Get all the pBBurstList where duration is less than DEFAULT_DURATION
-        defaultPBBurstShouldNotBeFound("duration.lessThan=" + DEFAULT_DURATION);
-
-        // Get all the pBBurstList where duration is less than UPDATED_DURATION
-        defaultPBBurstShouldBeFound("duration.lessThan=" + UPDATED_DURATION);
-    }
-
-    @Test
-    @Transactional
-    public void getAllPBBurstsByDurationIsGreaterThanSomething() throws Exception {
-        // Initialize the database
-        pBBurstRepository.saveAndFlush(pBBurst);
-
-        // Get all the pBBurstList where duration is greater than DEFAULT_DURATION
-        defaultPBBurstShouldNotBeFound("duration.greaterThan=" + DEFAULT_DURATION);
-
-        // Get all the pBBurstList where duration is greater than SMALLER_DURATION
-        defaultPBBurstShouldBeFound("duration.greaterThan=" + SMALLER_DURATION);
+        // Get all the pBBurstList where text does not contain UPDATED_TEXT
+        defaultPBBurstShouldBeFound("text.doesNotContain=" + UPDATED_TEXT);
     }
 
 
@@ -634,6 +614,216 @@ public class PBBurstResourceIT {
 
         // Get all the pBBurstList where pauseDuration is greater than SMALLER_PAUSE_DURATION
         defaultPBBurstShouldBeFound("pauseDuration.greaterThan=" + SMALLER_PAUSE_DURATION);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByStartTimeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where startTime equals to DEFAULT_START_TIME
+        defaultPBBurstShouldBeFound("startTime.equals=" + DEFAULT_START_TIME);
+
+        // Get all the pBBurstList where startTime equals to UPDATED_START_TIME
+        defaultPBBurstShouldNotBeFound("startTime.equals=" + UPDATED_START_TIME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByStartTimeIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where startTime not equals to DEFAULT_START_TIME
+        defaultPBBurstShouldNotBeFound("startTime.notEquals=" + DEFAULT_START_TIME);
+
+        // Get all the pBBurstList where startTime not equals to UPDATED_START_TIME
+        defaultPBBurstShouldBeFound("startTime.notEquals=" + UPDATED_START_TIME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByStartTimeIsInShouldWork() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where startTime in DEFAULT_START_TIME or UPDATED_START_TIME
+        defaultPBBurstShouldBeFound("startTime.in=" + DEFAULT_START_TIME + "," + UPDATED_START_TIME);
+
+        // Get all the pBBurstList where startTime equals to UPDATED_START_TIME
+        defaultPBBurstShouldNotBeFound("startTime.in=" + UPDATED_START_TIME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByStartTimeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where startTime is not null
+        defaultPBBurstShouldBeFound("startTime.specified=true");
+
+        // Get all the pBBurstList where startTime is null
+        defaultPBBurstShouldNotBeFound("startTime.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByStartTimeIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where startTime is greater than or equal to DEFAULT_START_TIME
+        defaultPBBurstShouldBeFound("startTime.greaterThanOrEqual=" + DEFAULT_START_TIME);
+
+        // Get all the pBBurstList where startTime is greater than or equal to UPDATED_START_TIME
+        defaultPBBurstShouldNotBeFound("startTime.greaterThanOrEqual=" + UPDATED_START_TIME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByStartTimeIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where startTime is less than or equal to DEFAULT_START_TIME
+        defaultPBBurstShouldBeFound("startTime.lessThanOrEqual=" + DEFAULT_START_TIME);
+
+        // Get all the pBBurstList where startTime is less than or equal to SMALLER_START_TIME
+        defaultPBBurstShouldNotBeFound("startTime.lessThanOrEqual=" + SMALLER_START_TIME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByStartTimeIsLessThanSomething() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where startTime is less than DEFAULT_START_TIME
+        defaultPBBurstShouldNotBeFound("startTime.lessThan=" + DEFAULT_START_TIME);
+
+        // Get all the pBBurstList where startTime is less than UPDATED_START_TIME
+        defaultPBBurstShouldBeFound("startTime.lessThan=" + UPDATED_START_TIME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByStartTimeIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where startTime is greater than DEFAULT_START_TIME
+        defaultPBBurstShouldNotBeFound("startTime.greaterThan=" + DEFAULT_START_TIME);
+
+        // Get all the pBBurstList where startTime is greater than SMALLER_START_TIME
+        defaultPBBurstShouldBeFound("startTime.greaterThan=" + SMALLER_START_TIME);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByEndTimeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where endTime equals to DEFAULT_END_TIME
+        defaultPBBurstShouldBeFound("endTime.equals=" + DEFAULT_END_TIME);
+
+        // Get all the pBBurstList where endTime equals to UPDATED_END_TIME
+        defaultPBBurstShouldNotBeFound("endTime.equals=" + UPDATED_END_TIME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByEndTimeIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where endTime not equals to DEFAULT_END_TIME
+        defaultPBBurstShouldNotBeFound("endTime.notEquals=" + DEFAULT_END_TIME);
+
+        // Get all the pBBurstList where endTime not equals to UPDATED_END_TIME
+        defaultPBBurstShouldBeFound("endTime.notEquals=" + UPDATED_END_TIME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByEndTimeIsInShouldWork() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where endTime in DEFAULT_END_TIME or UPDATED_END_TIME
+        defaultPBBurstShouldBeFound("endTime.in=" + DEFAULT_END_TIME + "," + UPDATED_END_TIME);
+
+        // Get all the pBBurstList where endTime equals to UPDATED_END_TIME
+        defaultPBBurstShouldNotBeFound("endTime.in=" + UPDATED_END_TIME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByEndTimeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where endTime is not null
+        defaultPBBurstShouldBeFound("endTime.specified=true");
+
+        // Get all the pBBurstList where endTime is null
+        defaultPBBurstShouldNotBeFound("endTime.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByEndTimeIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where endTime is greater than or equal to DEFAULT_END_TIME
+        defaultPBBurstShouldBeFound("endTime.greaterThanOrEqual=" + DEFAULT_END_TIME);
+
+        // Get all the pBBurstList where endTime is greater than or equal to UPDATED_END_TIME
+        defaultPBBurstShouldNotBeFound("endTime.greaterThanOrEqual=" + UPDATED_END_TIME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByEndTimeIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where endTime is less than or equal to DEFAULT_END_TIME
+        defaultPBBurstShouldBeFound("endTime.lessThanOrEqual=" + DEFAULT_END_TIME);
+
+        // Get all the pBBurstList where endTime is less than or equal to SMALLER_END_TIME
+        defaultPBBurstShouldNotBeFound("endTime.lessThanOrEqual=" + SMALLER_END_TIME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByEndTimeIsLessThanSomething() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where endTime is less than DEFAULT_END_TIME
+        defaultPBBurstShouldNotBeFound("endTime.lessThan=" + DEFAULT_END_TIME);
+
+        // Get all the pBBurstList where endTime is less than UPDATED_END_TIME
+        defaultPBBurstShouldBeFound("endTime.lessThan=" + UPDATED_END_TIME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPBBurstsByEndTimeIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        pBBurstRepository.saveAndFlush(pBBurst);
+
+        // Get all the pBBurstList where endTime is greater than DEFAULT_END_TIME
+        defaultPBBurstShouldNotBeFound("endTime.greaterThan=" + DEFAULT_END_TIME);
+
+        // Get all the pBBurstList where endTime is greater than SMALLER_END_TIME
+        defaultPBBurstShouldBeFound("endTime.greaterThan=" + SMALLER_END_TIME);
     }
 
 
@@ -1164,184 +1354,106 @@ public class PBBurstResourceIT {
 
     @Test
     @Transactional
-    public void getAllPBBurstsByAvgSpeedIsEqualToSomething() throws Exception {
+    public void getAllPBBurstsByDotCountIsEqualToSomething() throws Exception {
         // Initialize the database
         pBBurstRepository.saveAndFlush(pBBurst);
 
-        // Get all the pBBurstList where avgSpeed equals to DEFAULT_AVG_SPEED
-        defaultPBBurstShouldBeFound("avgSpeed.equals=" + DEFAULT_AVG_SPEED);
+        // Get all the pBBurstList where dotCount equals to DEFAULT_DOT_COUNT
+        defaultPBBurstShouldBeFound("dotCount.equals=" + DEFAULT_DOT_COUNT);
 
-        // Get all the pBBurstList where avgSpeed equals to UPDATED_AVG_SPEED
-        defaultPBBurstShouldNotBeFound("avgSpeed.equals=" + UPDATED_AVG_SPEED);
+        // Get all the pBBurstList where dotCount equals to UPDATED_DOT_COUNT
+        defaultPBBurstShouldNotBeFound("dotCount.equals=" + UPDATED_DOT_COUNT);
     }
 
     @Test
     @Transactional
-    public void getAllPBBurstsByAvgSpeedIsNotEqualToSomething() throws Exception {
+    public void getAllPBBurstsByDotCountIsNotEqualToSomething() throws Exception {
         // Initialize the database
         pBBurstRepository.saveAndFlush(pBBurst);
 
-        // Get all the pBBurstList where avgSpeed not equals to DEFAULT_AVG_SPEED
-        defaultPBBurstShouldNotBeFound("avgSpeed.notEquals=" + DEFAULT_AVG_SPEED);
+        // Get all the pBBurstList where dotCount not equals to DEFAULT_DOT_COUNT
+        defaultPBBurstShouldNotBeFound("dotCount.notEquals=" + DEFAULT_DOT_COUNT);
 
-        // Get all the pBBurstList where avgSpeed not equals to UPDATED_AVG_SPEED
-        defaultPBBurstShouldBeFound("avgSpeed.notEquals=" + UPDATED_AVG_SPEED);
+        // Get all the pBBurstList where dotCount not equals to UPDATED_DOT_COUNT
+        defaultPBBurstShouldBeFound("dotCount.notEquals=" + UPDATED_DOT_COUNT);
     }
 
     @Test
     @Transactional
-    public void getAllPBBurstsByAvgSpeedIsInShouldWork() throws Exception {
+    public void getAllPBBurstsByDotCountIsInShouldWork() throws Exception {
         // Initialize the database
         pBBurstRepository.saveAndFlush(pBBurst);
 
-        // Get all the pBBurstList where avgSpeed in DEFAULT_AVG_SPEED or UPDATED_AVG_SPEED
-        defaultPBBurstShouldBeFound("avgSpeed.in=" + DEFAULT_AVG_SPEED + "," + UPDATED_AVG_SPEED);
+        // Get all the pBBurstList where dotCount in DEFAULT_DOT_COUNT or UPDATED_DOT_COUNT
+        defaultPBBurstShouldBeFound("dotCount.in=" + DEFAULT_DOT_COUNT + "," + UPDATED_DOT_COUNT);
 
-        // Get all the pBBurstList where avgSpeed equals to UPDATED_AVG_SPEED
-        defaultPBBurstShouldNotBeFound("avgSpeed.in=" + UPDATED_AVG_SPEED);
+        // Get all the pBBurstList where dotCount equals to UPDATED_DOT_COUNT
+        defaultPBBurstShouldNotBeFound("dotCount.in=" + UPDATED_DOT_COUNT);
     }
 
     @Test
     @Transactional
-    public void getAllPBBurstsByAvgSpeedIsNullOrNotNull() throws Exception {
+    public void getAllPBBurstsByDotCountIsNullOrNotNull() throws Exception {
         // Initialize the database
         pBBurstRepository.saveAndFlush(pBBurst);
 
-        // Get all the pBBurstList where avgSpeed is not null
-        defaultPBBurstShouldBeFound("avgSpeed.specified=true");
+        // Get all the pBBurstList where dotCount is not null
+        defaultPBBurstShouldBeFound("dotCount.specified=true");
 
-        // Get all the pBBurstList where avgSpeed is null
-        defaultPBBurstShouldNotBeFound("avgSpeed.specified=false");
+        // Get all the pBBurstList where dotCount is null
+        defaultPBBurstShouldNotBeFound("dotCount.specified=false");
     }
 
     @Test
     @Transactional
-    public void getAllPBBurstsByAvgSpeedIsGreaterThanOrEqualToSomething() throws Exception {
+    public void getAllPBBurstsByDotCountIsGreaterThanOrEqualToSomething() throws Exception {
         // Initialize the database
         pBBurstRepository.saveAndFlush(pBBurst);
 
-        // Get all the pBBurstList where avgSpeed is greater than or equal to DEFAULT_AVG_SPEED
-        defaultPBBurstShouldBeFound("avgSpeed.greaterThanOrEqual=" + DEFAULT_AVG_SPEED);
+        // Get all the pBBurstList where dotCount is greater than or equal to DEFAULT_DOT_COUNT
+        defaultPBBurstShouldBeFound("dotCount.greaterThanOrEqual=" + DEFAULT_DOT_COUNT);
 
-        // Get all the pBBurstList where avgSpeed is greater than or equal to UPDATED_AVG_SPEED
-        defaultPBBurstShouldNotBeFound("avgSpeed.greaterThanOrEqual=" + UPDATED_AVG_SPEED);
+        // Get all the pBBurstList where dotCount is greater than or equal to UPDATED_DOT_COUNT
+        defaultPBBurstShouldNotBeFound("dotCount.greaterThanOrEqual=" + UPDATED_DOT_COUNT);
     }
 
     @Test
     @Transactional
-    public void getAllPBBurstsByAvgSpeedIsLessThanOrEqualToSomething() throws Exception {
+    public void getAllPBBurstsByDotCountIsLessThanOrEqualToSomething() throws Exception {
         // Initialize the database
         pBBurstRepository.saveAndFlush(pBBurst);
 
-        // Get all the pBBurstList where avgSpeed is less than or equal to DEFAULT_AVG_SPEED
-        defaultPBBurstShouldBeFound("avgSpeed.lessThanOrEqual=" + DEFAULT_AVG_SPEED);
+        // Get all the pBBurstList where dotCount is less than or equal to DEFAULT_DOT_COUNT
+        defaultPBBurstShouldBeFound("dotCount.lessThanOrEqual=" + DEFAULT_DOT_COUNT);
 
-        // Get all the pBBurstList where avgSpeed is less than or equal to SMALLER_AVG_SPEED
-        defaultPBBurstShouldNotBeFound("avgSpeed.lessThanOrEqual=" + SMALLER_AVG_SPEED);
+        // Get all the pBBurstList where dotCount is less than or equal to SMALLER_DOT_COUNT
+        defaultPBBurstShouldNotBeFound("dotCount.lessThanOrEqual=" + SMALLER_DOT_COUNT);
     }
 
     @Test
     @Transactional
-    public void getAllPBBurstsByAvgSpeedIsLessThanSomething() throws Exception {
+    public void getAllPBBurstsByDotCountIsLessThanSomething() throws Exception {
         // Initialize the database
         pBBurstRepository.saveAndFlush(pBBurst);
 
-        // Get all the pBBurstList where avgSpeed is less than DEFAULT_AVG_SPEED
-        defaultPBBurstShouldNotBeFound("avgSpeed.lessThan=" + DEFAULT_AVG_SPEED);
+        // Get all the pBBurstList where dotCount is less than DEFAULT_DOT_COUNT
+        defaultPBBurstShouldNotBeFound("dotCount.lessThan=" + DEFAULT_DOT_COUNT);
 
-        // Get all the pBBurstList where avgSpeed is less than UPDATED_AVG_SPEED
-        defaultPBBurstShouldBeFound("avgSpeed.lessThan=" + UPDATED_AVG_SPEED);
+        // Get all the pBBurstList where dotCount is less than UPDATED_DOT_COUNT
+        defaultPBBurstShouldBeFound("dotCount.lessThan=" + UPDATED_DOT_COUNT);
     }
 
     @Test
     @Transactional
-    public void getAllPBBurstsByAvgSpeedIsGreaterThanSomething() throws Exception {
+    public void getAllPBBurstsByDotCountIsGreaterThanSomething() throws Exception {
         // Initialize the database
         pBBurstRepository.saveAndFlush(pBBurst);
 
-        // Get all the pBBurstList where avgSpeed is greater than DEFAULT_AVG_SPEED
-        defaultPBBurstShouldNotBeFound("avgSpeed.greaterThan=" + DEFAULT_AVG_SPEED);
+        // Get all the pBBurstList where dotCount is greater than DEFAULT_DOT_COUNT
+        defaultPBBurstShouldNotBeFound("dotCount.greaterThan=" + DEFAULT_DOT_COUNT);
 
-        // Get all the pBBurstList where avgSpeed is greater than SMALLER_AVG_SPEED
-        defaultPBBurstShouldBeFound("avgSpeed.greaterThan=" + SMALLER_AVG_SPEED);
-    }
-
-
-    @Test
-    @Transactional
-    public void getAllPBBurstsByTextIsEqualToSomething() throws Exception {
-        // Initialize the database
-        pBBurstRepository.saveAndFlush(pBBurst);
-
-        // Get all the pBBurstList where text equals to DEFAULT_TEXT
-        defaultPBBurstShouldBeFound("text.equals=" + DEFAULT_TEXT);
-
-        // Get all the pBBurstList where text equals to UPDATED_TEXT
-        defaultPBBurstShouldNotBeFound("text.equals=" + UPDATED_TEXT);
-    }
-
-    @Test
-    @Transactional
-    public void getAllPBBurstsByTextIsNotEqualToSomething() throws Exception {
-        // Initialize the database
-        pBBurstRepository.saveAndFlush(pBBurst);
-
-        // Get all the pBBurstList where text not equals to DEFAULT_TEXT
-        defaultPBBurstShouldNotBeFound("text.notEquals=" + DEFAULT_TEXT);
-
-        // Get all the pBBurstList where text not equals to UPDATED_TEXT
-        defaultPBBurstShouldBeFound("text.notEquals=" + UPDATED_TEXT);
-    }
-
-    @Test
-    @Transactional
-    public void getAllPBBurstsByTextIsInShouldWork() throws Exception {
-        // Initialize the database
-        pBBurstRepository.saveAndFlush(pBBurst);
-
-        // Get all the pBBurstList where text in DEFAULT_TEXT or UPDATED_TEXT
-        defaultPBBurstShouldBeFound("text.in=" + DEFAULT_TEXT + "," + UPDATED_TEXT);
-
-        // Get all the pBBurstList where text equals to UPDATED_TEXT
-        defaultPBBurstShouldNotBeFound("text.in=" + UPDATED_TEXT);
-    }
-
-    @Test
-    @Transactional
-    public void getAllPBBurstsByTextIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        pBBurstRepository.saveAndFlush(pBBurst);
-
-        // Get all the pBBurstList where text is not null
-        defaultPBBurstShouldBeFound("text.specified=true");
-
-        // Get all the pBBurstList where text is null
-        defaultPBBurstShouldNotBeFound("text.specified=false");
-    }
-                @Test
-    @Transactional
-    public void getAllPBBurstsByTextContainsSomething() throws Exception {
-        // Initialize the database
-        pBBurstRepository.saveAndFlush(pBBurst);
-
-        // Get all the pBBurstList where text contains DEFAULT_TEXT
-        defaultPBBurstShouldBeFound("text.contains=" + DEFAULT_TEXT);
-
-        // Get all the pBBurstList where text contains UPDATED_TEXT
-        defaultPBBurstShouldNotBeFound("text.contains=" + UPDATED_TEXT);
-    }
-
-    @Test
-    @Transactional
-    public void getAllPBBurstsByTextNotContainsSomething() throws Exception {
-        // Initialize the database
-        pBBurstRepository.saveAndFlush(pBBurst);
-
-        // Get all the pBBurstList where text does not contain DEFAULT_TEXT
-        defaultPBBurstShouldNotBeFound("text.doesNotContain=" + DEFAULT_TEXT);
-
-        // Get all the pBBurstList where text does not contain UPDATED_TEXT
-        defaultPBBurstShouldBeFound("text.doesNotContain=" + UPDATED_TEXT);
+        // Get all the pBBurstList where dotCount is greater than SMALLER_DOT_COUNT
+        defaultPBBurstShouldBeFound("dotCount.greaterThan=" + SMALLER_DOT_COUNT);
     }
 
 
@@ -1372,15 +1484,16 @@ public class PBBurstResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(pBBurst.getId().intValue())))
-            .andExpect(jsonPath("$.[*].duration").value(hasItem(DEFAULT_DURATION.toString())))
-            .andExpect(jsonPath("$.[*].pauseDuration").value(hasItem(DEFAULT_PAUSE_DURATION.toString())))
-            .andExpect(jsonPath("$.[*].startX").value(hasItem(DEFAULT_START_X)))
-            .andExpect(jsonPath("$.[*].startY").value(hasItem(DEFAULT_START_Y)))
-            .andExpect(jsonPath("$.[*].endX").value(hasItem(DEFAULT_END_X)))
-            .andExpect(jsonPath("$.[*].endY").value(hasItem(DEFAULT_END_Y)))
+            .andExpect(jsonPath("$.[*].text").value(hasItem(DEFAULT_TEXT)))
+            .andExpect(jsonPath("$.[*].pauseDuration").value(hasItem(DEFAULT_PAUSE_DURATION.intValue())))
+            .andExpect(jsonPath("$.[*].startTime").value(hasItem(DEFAULT_START_TIME.intValue())))
+            .andExpect(jsonPath("$.[*].endTime").value(hasItem(DEFAULT_END_TIME.intValue())))
+            .andExpect(jsonPath("$.[*].startX").value(hasItem(DEFAULT_START_X.doubleValue())))
+            .andExpect(jsonPath("$.[*].startY").value(hasItem(DEFAULT_START_Y.doubleValue())))
+            .andExpect(jsonPath("$.[*].endX").value(hasItem(DEFAULT_END_X.doubleValue())))
+            .andExpect(jsonPath("$.[*].endY").value(hasItem(DEFAULT_END_Y.doubleValue())))
             .andExpect(jsonPath("$.[*].distance").value(hasItem(DEFAULT_DISTANCE.doubleValue())))
-            .andExpect(jsonPath("$.[*].avgSpeed").value(hasItem(DEFAULT_AVG_SPEED.doubleValue())))
-            .andExpect(jsonPath("$.[*].text").value(hasItem(DEFAULT_TEXT)));
+            .andExpect(jsonPath("$.[*].dotCount").value(hasItem(DEFAULT_DOT_COUNT)));
 
         // Check, that the count call also returns 1
         restPBBurstMockMvc.perform(get("/api/pb-bursts/count?sort=id,desc&" + filter))
@@ -1428,15 +1541,16 @@ public class PBBurstResourceIT {
         // Disconnect from session so that the updates on updatedPBBurst are not directly saved in db
         em.detach(updatedPBBurst);
         updatedPBBurst
-            .duration(UPDATED_DURATION)
+            .text(UPDATED_TEXT)
             .pauseDuration(UPDATED_PAUSE_DURATION)
+            .startTime(UPDATED_START_TIME)
+            .endTime(UPDATED_END_TIME)
             .startX(UPDATED_START_X)
             .startY(UPDATED_START_Y)
             .endX(UPDATED_END_X)
             .endY(UPDATED_END_Y)
             .distance(UPDATED_DISTANCE)
-            .avgSpeed(UPDATED_AVG_SPEED)
-            .text(UPDATED_TEXT);
+            .dotCount(UPDATED_DOT_COUNT);
         PBBurstDTO pBBurstDTO = pBBurstMapper.toDto(updatedPBBurst);
 
         restPBBurstMockMvc.perform(put("/api/pb-bursts")
@@ -1448,15 +1562,16 @@ public class PBBurstResourceIT {
         List<PBBurst> pBBurstList = pBBurstRepository.findAll();
         assertThat(pBBurstList).hasSize(databaseSizeBeforeUpdate);
         PBBurst testPBBurst = pBBurstList.get(pBBurstList.size() - 1);
-        assertThat(testPBBurst.getDuration()).isEqualTo(UPDATED_DURATION);
+        assertThat(testPBBurst.getText()).isEqualTo(UPDATED_TEXT);
         assertThat(testPBBurst.getPauseDuration()).isEqualTo(UPDATED_PAUSE_DURATION);
+        assertThat(testPBBurst.getStartTime()).isEqualTo(UPDATED_START_TIME);
+        assertThat(testPBBurst.getEndTime()).isEqualTo(UPDATED_END_TIME);
         assertThat(testPBBurst.getStartX()).isEqualTo(UPDATED_START_X);
         assertThat(testPBBurst.getStartY()).isEqualTo(UPDATED_START_Y);
         assertThat(testPBBurst.getEndX()).isEqualTo(UPDATED_END_X);
         assertThat(testPBBurst.getEndY()).isEqualTo(UPDATED_END_Y);
         assertThat(testPBBurst.getDistance()).isEqualTo(UPDATED_DISTANCE);
-        assertThat(testPBBurst.getAvgSpeed()).isEqualTo(UPDATED_AVG_SPEED);
-        assertThat(testPBBurst.getText()).isEqualTo(UPDATED_TEXT);
+        assertThat(testPBBurst.getDotCount()).isEqualTo(UPDATED_DOT_COUNT);
     }
 
     @Test

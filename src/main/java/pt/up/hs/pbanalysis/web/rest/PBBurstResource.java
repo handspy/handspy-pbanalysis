@@ -30,7 +30,7 @@ import java.util.Optional;
  * REST controller for managing {@link pt.up.hs.pbanalysis.domain.PBBurst}.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/analysis/{analysisId}")
 public class PBBurstResource {
 
     private final Logger log = LoggerFactory.getLogger(PBBurstResource.class);
@@ -57,7 +57,13 @@ public class PBBurstResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/pb-bursts")
-    public ResponseEntity<PBBurstDTO> createPBBurst(@Valid @RequestBody PBBurstDTO pBBurstDTO) throws URISyntaxException {
+    public ResponseEntity<PBBurstDTO> createPBBurst(
+        @PathVariable("projectId") Long projectId,
+        @PathVariable("sampleId") Long sampleId,
+        @PathVariable("protocolId") Long protocolId,
+        @PathVariable("analysisId") Long analysisId,
+        @Valid @RequestBody PBBurstDTO pBBurstDTO
+    ) throws URISyntaxException {
         log.debug("REST request to save PBBurst : {}", pBBurstDTO);
         if (pBBurstDTO.getId() != null) {
             throw new BadRequestAlertException("A new pBBurst cannot already have an ID", ENTITY_NAME, "idexists");
@@ -75,10 +81,15 @@ public class PBBurstResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated pBBurstDTO,
      * or with status {@code 400 (Bad Request)} if the pBBurstDTO is not valid,
      * or with status {@code 500 (Internal Server Error)} if the pBBurstDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/pb-bursts")
-    public ResponseEntity<PBBurstDTO> updatePBBurst(@Valid @RequestBody PBBurstDTO pBBurstDTO) throws URISyntaxException {
+    public ResponseEntity<PBBurstDTO> updatePBBurst(
+        @PathVariable("projectId") Long projectId,
+        @PathVariable("sampleId") Long sampleId,
+        @PathVariable("protocolId") Long protocolId,
+        @PathVariable("analysisId") Long analysisId,
+        @Valid @RequestBody PBBurstDTO pBBurstDTO
+    ) {
         log.debug("REST request to update PBBurst : {}", pBBurstDTO);
         if (pBBurstDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -97,7 +108,13 @@ public class PBBurstResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of pBBursts in body.
      */
     @GetMapping("/pb-bursts")
-    public ResponseEntity<List<PBBurstDTO>> getAllPBBursts(PBBurstCriteria criteria, Pageable pageable) {
+    public ResponseEntity<List<PBBurstDTO>> getAllPBBursts(
+        @PathVariable("projectId") Long projectId,
+        @PathVariable("sampleId") Long sampleId,
+        @PathVariable("protocolId") Long protocolId,
+        @PathVariable("analysisId") Long analysisId,
+        PBBurstCriteria criteria, Pageable pageable
+    ) {
         log.debug("REST request to get PBBursts by criteria: {}", criteria);
         Page<PBBurstDTO> page = pBBurstQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -111,7 +128,13 @@ public class PBBurstResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
      */
     @GetMapping("/pb-bursts/count")
-    public ResponseEntity<Long> countPBBursts(PBBurstCriteria criteria) {
+    public ResponseEntity<Long> countPBBursts(
+        @PathVariable("projectId") Long projectId,
+        @PathVariable("sampleId") Long sampleId,
+        @PathVariable("protocolId") Long protocolId,
+        @PathVariable("analysisId") Long analysisId,
+        PBBurstCriteria criteria
+    ) {
         log.debug("REST request to count PBBursts by criteria: {}", criteria);
         return ResponseEntity.ok().body(pBBurstQueryService.countByCriteria(criteria));
     }
@@ -123,7 +146,13 @@ public class PBBurstResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the pBBurstDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/pb-bursts/{id}")
-    public ResponseEntity<PBBurstDTO> getPBBurst(@PathVariable Long id) {
+    public ResponseEntity<PBBurstDTO> getPBBurst(
+        @PathVariable("projectId") Long projectId,
+        @PathVariable("sampleId") Long sampleId,
+        @PathVariable("protocolId") Long protocolId,
+        @PathVariable("analysisId") Long analysisId,
+        @PathVariable Long id
+    ) {
         log.debug("REST request to get PBBurst : {}", id);
         Optional<PBBurstDTO> pBBurstDTO = pBBurstService.findOne(id);
         return ResponseUtil.wrapOrNotFound(pBBurstDTO);
@@ -136,9 +165,17 @@ public class PBBurstResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/pb-bursts/{id}")
-    public ResponseEntity<Void> deletePBBurst(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePBBurst(
+        @PathVariable("projectId") Long projectId,
+        @PathVariable("sampleId") Long sampleId,
+        @PathVariable("protocolId") Long protocolId,
+        @PathVariable("analysisId") Long analysisId,
+        @PathVariable Long id
+    ) {
         log.debug("REST request to delete PBBurst : {}", id);
         pBBurstService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.noContent()
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .build();
     }
 }

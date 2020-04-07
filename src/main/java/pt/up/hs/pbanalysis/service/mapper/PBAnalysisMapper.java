@@ -13,6 +13,9 @@ import org.mapstruct.*;
 public interface PBAnalysisMapper extends EntityMapper<PBAnalysisDTO, PBAnalysis> {
 
 
+    @Mapping(target = "bursts", ignore = true)
+    @Mapping(target = "removeBursts", ignore = true)
+    PBAnalysis toEntity(PBAnalysisDTO pBAnalysisDTO);
 
     default PBAnalysis fromId(Long id) {
         if (id == null) {

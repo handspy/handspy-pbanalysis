@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.github.jhipster.service.QueryService;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import pt.up.hs.pbanalysis.domain.PBAnalysis;
 import pt.up.hs.pbanalysis.domain.*; // for static metamodels
 import pt.up.hs.pbanalysis.repository.PBAnalysisRepository;
@@ -48,9 +49,15 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<PBAnalysisDTO> findByCriteria(PBAnalysisCriteria criteria) {
+    public List<PBAnalysisDTO> findByCriteria(
+        Long projectId, Long sampleId, Long protocolId,
+        PBAnalysisCriteria criteria
+    ) {
         log.debug("find by criteria : {}", criteria);
-        final Specification<PBAnalysis> specification = createSpecification(criteria);
+        final Specification<PBAnalysis> specification = createSpecification(criteria)
+            .and(equalsSpecification(root -> root.get("projectId"), projectId))
+            .and(equalsSpecification(root -> root.get("sampleId"), sampleId))
+            .and(equalsSpecification(root -> root.get("protocolId"), protocolId));
         return pBAnalysisMapper.toDto(pBAnalysisRepository.findAll(specification));
     }
 
@@ -61,9 +68,15 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<PBAnalysisDTO> findByCriteria(PBAnalysisCriteria criteria, Pageable page) {
+    public Page<PBAnalysisDTO> findByCriteria(
+        Long projectId, Long sampleId, Long protocolId,
+        PBAnalysisCriteria criteria, Pageable page
+    ) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
-        final Specification<PBAnalysis> specification = createSpecification(criteria);
+        final Specification<PBAnalysis> specification = createSpecification(criteria)
+            .and(equalsSpecification(root -> root.get("projectId"), projectId))
+            .and(equalsSpecification(root -> root.get("sampleId"), sampleId))
+            .and(equalsSpecification(root -> root.get("protocolId"), protocolId));
         return pBAnalysisRepository.findAll(specification, page)
             .map(pBAnalysisMapper::toDto);
     }
@@ -74,9 +87,15 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
      * @return the number of matching entities.
      */
     @Transactional(readOnly = true)
-    public long countByCriteria(PBAnalysisCriteria criteria) {
+    public long countByCriteria(
+        Long projectId, Long sampleId, Long protocolId,
+        PBAnalysisCriteria criteria
+    ) {
         log.debug("count by criteria : {}", criteria);
-        final Specification<PBAnalysis> specification = createSpecification(criteria);
+        final Specification<PBAnalysis> specification = createSpecification(criteria)
+            .and(equalsSpecification(root -> root.get("projectId"), projectId))
+            .and(equalsSpecification(root -> root.get("sampleId"), sampleId))
+            .and(equalsSpecification(root -> root.get("protocolId"), protocolId));
         return pBAnalysisRepository.count(specification);
     }
 
@@ -91,11 +110,12 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
             if (criteria.getId() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getId(), PBAnalysis_.id));
             }
-            if (criteria.getSample() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getSample(), PBAnalysis_.sample));
-            }
             if (criteria.getThreshold() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getThreshold(), PBAnalysis_.threshold));
+            }
+            if (criteria.getBurstsId() != null) {
+                specification = specification.and(buildSpecification(criteria.getBurstsId(),
+                    root -> root.join(PBAnalysis_.bursts, JoinType.LEFT).get(PBBurst_.id)));
             }
         }
         return specification;

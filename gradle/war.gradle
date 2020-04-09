@@ -1,7 +1,7 @@
 apply plugin: "war"
 
 bootWar {
-    mainClassName = "pt.up.hs.pbanalysis.PbanalysisApp"
+    mainClassName = "pt.up.hs.pbanalysis.PBAnalysisApp"
     includes = ["WEB-INF/**", "META-INF/**"]
 }
 

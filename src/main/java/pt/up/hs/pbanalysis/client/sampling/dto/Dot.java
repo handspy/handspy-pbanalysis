@@ -1,4 +1,4 @@
-package pt.up.hs.pbanalysis.client.dto;
+package pt.up.hs.pbanalysis.client.sampling.dto;
 
 import java.io.Serializable;
 

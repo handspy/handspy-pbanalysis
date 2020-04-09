@@ -89,8 +89,15 @@ public class PBBurstDTO implements Serializable {
     private Double distance;
 
     /**
+     * Average pressure in this burst.
+     */
+    @ApiModelProperty(value = "Average pressure in this burst.")
+    private Double pressure;
+
+    /**
      * Text slice written in burst.
      */
+    @Size(max = 500)
     @ApiModelProperty(value = "Text slice written in burst.")
     private String text;
 
@@ -174,6 +181,14 @@ public class PBBurstDTO implements Serializable {
         this.endY = endY;
     }
 
+    public Integer getDotCount() {
+        return dotCount;
+    }
+
+    public void setDotCount(Integer dotCount) {
+        this.dotCount = dotCount;
+    }
+
     public Double getDistance() {
         return distance;
     }
@@ -182,12 +197,12 @@ public class PBBurstDTO implements Serializable {
         this.distance = distance;
     }
 
-    public Integer getDotCount() {
-        return dotCount;
+    public Double getPressure() {
+        return pressure;
     }
 
-    public void setDotCount(Integer dotCount) {
-        this.dotCount = dotCount;
+    public void setPressure(Double pressure) {
+        this.pressure = pressure;
     }
 
     @Override
@@ -225,6 +240,7 @@ public class PBBurstDTO implements Serializable {
             ", endX=" + getEndX() +
             ", endY=" + getEndY() +
             ", distance=" + getDistance() +
+            ", pressure=" + getPressure() +
             ", dotCount=" + getDotCount() +
             "}";
     }

@@ -2,23 +2,23 @@
     "name": "PBAnalysis",
     "fields": [
         {
+          "fieldName": "sampleId",
+          "fieldType": "Long",
+          "fieldValidateRules": [
+            "required"
+          ]
+        },
+        {
+          "fieldName": "protocolId",
+          "fieldType": "Long",
+          "fieldValidateRules": [
+            "required"
+          ]
+        },
+        {
             "fieldName": "threshold",
             "javadoc": "Threshold used to identify bursts",
             "fieldType": "Long"
-        },
-        {
-            "fieldName": "protocolId",
-            "fieldType": "Long",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "sampleId",
-            "fieldType": "Long",
-            "fieldValidateRules": [
-                "required"
-            ]
         }
     ],
     "relationships": [

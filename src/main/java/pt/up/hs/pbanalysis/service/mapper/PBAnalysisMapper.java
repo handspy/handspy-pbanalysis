@@ -9,13 +9,19 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link PBAnalysis} and its DTO {@link PBAnalysisDTO}.
  */
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = {PBBurstMapper.class})
 public interface PBAnalysisMapper extends EntityMapper<PBAnalysisDTO, PBAnalysis> {
 
-
-    @Mapping(target = "bursts", ignore = true)
+    @Mapping(source = "bursts", target = "bursts")
     @Mapping(target = "removeBursts", ignore = true)
     PBAnalysis toEntity(PBAnalysisDTO pBAnalysisDTO);
+
+    @AfterMapping
+    default void setBurstAnalysis(@MappingTarget PBAnalysis pbAnalysis) {
+        for (PBBurst pbBurst : pbAnalysis.getBursts()) {
+            pbBurst.setAnalysis(pbAnalysis);
+        }
+    }
 
     default PBAnalysis fromId(Long id) {
         if (id == null) {

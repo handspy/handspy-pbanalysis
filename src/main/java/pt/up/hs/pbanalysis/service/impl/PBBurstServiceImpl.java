@@ -24,65 +24,92 @@ public class PBBurstServiceImpl implements PBBurstService {
 
     private final Logger log = LoggerFactory.getLogger(PBBurstServiceImpl.class);
 
-    private final PBBurstRepository pBBurstRepository;
+    private final PBBurstRepository pbBurstRepository;
+    private final PBBurstMapper pbBurstMapper;
 
-    private final PBBurstMapper pBBurstMapper;
-
-    public PBBurstServiceImpl(PBBurstRepository pBBurstRepository, PBBurstMapper pBBurstMapper) {
-        this.pBBurstRepository = pBBurstRepository;
-        this.pBBurstMapper = pBBurstMapper;
+    public PBBurstServiceImpl(PBBurstRepository pbBurstRepository, PBBurstMapper pbBurstMapper) {
+        this.pbBurstRepository = pbBurstRepository;
+        this.pbBurstMapper = pbBurstMapper;
     }
 
     /**
-     * Save a pBBurst.
+     * Save a pause-burst burst.
      *
-     * @param pBBurstDTO the entity to save.
+     * @param projectId  ID of the project to which the burst belongs.
+     * @param sampleId   ID of the sample to which the burst belongs.
+     * @param protocolId ID of the protocol to which the burst belongs.
+     * @param analysisId ID of the analysis to which the burst belongs.
+     * @param pbBurstDTO the entity to save.
      * @return the persisted entity.
      */
     @Override
-    public PBBurstDTO save(PBBurstDTO pBBurstDTO) {
-        log.debug("Request to save PBBurst : {}", pBBurstDTO);
-        PBBurst pBBurst = pBBurstMapper.toEntity(pBBurstDTO);
-        pBBurst = pBBurstRepository.save(pBBurst);
-        return pBBurstMapper.toDto(pBBurst);
+    public PBBurstDTO save(
+        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        PBBurstDTO pbBurstDTO
+    ) {
+        log.debug("Request to save pause-burst burst {} of project {} of sample {} of protocol {} of analysis {}", pbBurstDTO, projectId, sampleId, protocolId, analysisId);
+        PBBurst pBBurst = pbBurstMapper.toEntity(pbBurstDTO);
+        pBBurst = pbBurstRepository.save(pBBurst);
+        return pbBurstMapper.toDto(pBBurst);
     }
 
     /**
-     * Get all the pBBursts.
+     * Get all the pause-burst bursts.
      *
-     * @param pageable the pagination information.
+     * @param projectId  ID of the project to which the bursts belong.
+     * @param sampleId   ID of the sample to which the bursts belong.
+     * @param protocolId ID of the protocol to which the bursts belong.
+     * @param analysisId ID of the analysis to which the bursts belong.
+     * @param pageable   the pagination information.
      * @return the list of entities.
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<PBBurstDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all PBBursts");
-        return pBBurstRepository.findAll(pageable)
-            .map(pBBurstMapper::toDto);
+    public Page<PBBurstDTO> findAll(
+        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        Pageable pageable
+    ) {
+        log.debug("Request to get all pause-burst bursts of project {} of sample {} of protocol {} of analysis {}", projectId, sampleId, protocolId, analysisId);
+        return pbBurstRepository.findAll(pageable)
+            .map(pbBurstMapper::toDto);
     }
 
     /**
-     * Get one pBBurst by id.
+     * Get the "id" pause-burst burst.
      *
-     * @param id the id of the entity.
+     * @param projectId  ID of the project to which the burst belongs.
+     * @param sampleId   ID of the sample to which the burst belongs.
+     * @param protocolId ID of the protocol to which the burst belongs.
+     * @param analysisId ID of the analysis to which the burst belongs.
+     * @param id         the id of the entity.
      * @return the entity.
      */
     @Override
     @Transactional(readOnly = true)
-    public Optional<PBBurstDTO> findOne(Long id) {
-        log.debug("Request to get PBBurst : {}", id);
-        return pBBurstRepository.findById(id)
-            .map(pBBurstMapper::toDto);
+    public Optional<PBBurstDTO> findOne(
+        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        Long id
+    ) {
+        log.debug("Request to get pause-burst burst {} of project {} of sample {} of protocol {} of analysis {}", id, projectId, sampleId, protocolId, analysisId);
+        return pbBurstRepository.findById(id)
+            .map(pbBurstMapper::toDto);
     }
 
     /**
-     * Delete the pBBurst by id.
+     * Delete the "id" pause-burst burst.
      *
-     * @param id the id of the entity.
+     * @param projectId  ID of the project to which the burst belongs.
+     * @param sampleId   ID of the sample to which the burst belongs.
+     * @param protocolId ID of the protocol to which the burst belongs.
+     * @param analysisId ID of the analysis to which the burst belongs.
+     * @param id         the id of the entity.
      */
     @Override
-    public void delete(Long id) {
-        log.debug("Request to delete PBBurst : {}", id);
-        pBBurstRepository.deleteById(id);
+    public void delete(
+        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        Long id
+    ) {
+        log.debug("Request to delete pause-burst burst {} of project {} of sample {} of protocol {} of analysis {}", id, projectId, sampleId, protocolId, analysisId);
+        pbBurstRepository.deleteById(id);
     }
 }

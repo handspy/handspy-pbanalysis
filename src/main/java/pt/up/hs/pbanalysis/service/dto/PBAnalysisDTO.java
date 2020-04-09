@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -41,11 +43,29 @@ public class PBAnalysisDTO implements Serializable {
     private Long protocolId;
 
     /**
+     * Name of the analysis.
+     */
+    @NotNull
+    @Size(max = 200)
+    @ApiModelProperty(value = "Name of the analysis.", required = true)
+    private String name;
+
+    /**
+     * Details about the analysis.
+     */
+    @Size(max = 500)
+    @ApiModelProperty(value = "Details about the analysis.")
+    private String description;
+
+    /**
      * Threshold used to calculate bursts (in ms).
      */
     @NotNull
     @ApiModelProperty(value = "Threshold used to calculate bursts (in ms).")
     private Long threshold;
+
+
+    private List<PBBurstDTO> bursts = new ArrayList<>();
 
 
     public Long getId() {
@@ -80,12 +100,36 @@ public class PBAnalysisDTO implements Serializable {
         this.protocolId = protocolId;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Long getThreshold() {
         return threshold;
     }
 
     public void setThreshold(Long threshold) {
         this.threshold = threshold;
+    }
+
+    public List<PBBurstDTO> getBursts() {
+        return bursts;
+    }
+
+    public void setBursts(List<PBBurstDTO> bursts) {
+        this.bursts = bursts;
     }
 
     @Override
@@ -116,6 +160,8 @@ public class PBAnalysisDTO implements Serializable {
             ", projectId=" + getProjectId() +
             ", sampleId=" + getSampleId() +
             ", protocolId=" + getProtocolId() +
+            ", name=" + getName() +
+            ", description=" + getDescription() +
             ", threshold=" + getThreshold() +
             "}";
     }

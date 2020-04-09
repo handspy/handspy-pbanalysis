@@ -93,15 +93,24 @@ public class PBBurst implements Serializable {
     private Double distance;
 
     /**
+     * Average pressure in this burst.
+     */
+    @Column(name = "pressure")
+    private Double pressure;
+
+    /**
      * Text slice written in burst.
      */
-    @Column(name = "text")
+    @Size(max = 500)
+    @Column(name = "text", length = 500)
     private String text;
 
     /**
      * A burst is part of a Pause-Burst analysis.
      */
-    @ManyToOne
+    @NotNull
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "analysis_id", referencedColumnName = "id")
     @JsonIgnoreProperties("bursts")
     private PBAnalysis analysis;
 
@@ -231,6 +240,19 @@ public class PBBurst implements Serializable {
         this.distance = distance;
     }
 
+    public Double getPressure() {
+        return pressure;
+    }
+
+    public PBBurst pressure(Double pressure) {
+        this.pressure = pressure;
+        return this;
+    }
+
+    public void setPressure(Double pressure) {
+        this.pressure = pressure;
+    }
+
     public Integer getDotCount() {
         return dotCount;
     }
@@ -287,6 +309,7 @@ public class PBBurst implements Serializable {
             ", endX=" + getEndX() +
             ", endY=" + getEndY() +
             ", distance=" + getDistance() +
+            ", pressure=" + getPressure() +
             ", dotCount=" + getDotCount() +
             "}";
     }

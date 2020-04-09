@@ -26,6 +26,10 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
+    private StringFilter name;
+
+    private StringFilter description;
+
     private LongFilter threshold;
 
     private LongFilter burstsId;
@@ -35,6 +39,8 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
 
     public PBAnalysisCriteria(PBAnalysisCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
+        this.name = other.name == null ? null : other.name.copy();
+        this.description = other.description == null ? null : other.description.copy();
         this.threshold = other.threshold == null ? null : other.threshold.copy();
         this.burstsId = other.burstsId == null ? null : other.burstsId.copy();
     }
@@ -50,6 +56,22 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
 
     public void setId(LongFilter id) {
         this.id = id;
+    }
+
+    public StringFilter getName() {
+        return name;
+    }
+
+    public void setName(StringFilter name) {
+        this.name = name;
+    }
+
+    public StringFilter getDescription() {
+        return description;
+    }
+
+    public void setDescription(StringFilter description) {
+        this.description = description;
     }
 
     public LongFilter getThreshold() {
@@ -80,6 +102,8 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
         final PBAnalysisCriteria that = (PBAnalysisCriteria) o;
         return
             Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description) &&
             Objects.equals(threshold, that.threshold) &&
             Objects.equals(burstsId, that.burstsId);
     }
@@ -87,9 +111,11 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
     @Override
     public int hashCode() {
         return Objects.hash(
-        id,
-        threshold,
-        burstsId
+            id,
+            name,
+            description,
+            threshold,
+            burstsId
         );
     }
 
@@ -98,6 +124,8 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
         return "PBAnalysisCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
                 (threshold != null ? "threshold=" + threshold + ", " : "") +
+                (name != null ? "name=" + name + ", " : "") +
+                (description != null ? "description=" + description + ", " : "") +
                 (burstsId != null ? "burstsId=" + burstsId + ", " : "") +
             "}";
     }

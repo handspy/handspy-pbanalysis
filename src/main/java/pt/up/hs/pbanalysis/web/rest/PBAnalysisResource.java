@@ -38,23 +38,23 @@ public class PBAnalysisResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final PBAnalysisService pBAnalysisService;
+    private final PBAnalysisService pbAnalysisService;
 
-    private final PBAnalysisQueryService pBAnalysisQueryService;
+    private final PBAnalysisQueryService pbAnalysisQueryService;
 
-    public PBAnalysisResource(PBAnalysisService pBAnalysisService, PBAnalysisQueryService pBAnalysisQueryService) {
-        this.pBAnalysisService = pBAnalysisService;
-        this.pBAnalysisQueryService = pBAnalysisQueryService;
+    public PBAnalysisResource(PBAnalysisService pbAnalysisService, PBAnalysisQueryService pbAnalysisQueryService) {
+        this.pbAnalysisService = pbAnalysisService;
+        this.pbAnalysisQueryService = pbAnalysisQueryService;
     }
 
     /**
-     * {@code POST  /pb-analyses} : Create a new pBAnalysis.
+     * {@code POST  /pb-analyses} : Create a new pause-burst analysis.
      *
      * @param projectId ID of the project of the analysis.
      * @param sampleId ID of the sample of the analysis.
      * @param protocolId ID of the protocol analyzed.
-     * @param pBAnalysisDTO the pBAnalysisDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new pBAnalysisDTO, or with status {@code 400 (Bad Request)} if the pBAnalysis has already an ID.
+     * @param pbAnalysisDTO the pbAnalysisDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new pbAnalysisDTO, or with status {@code 400 (Bad Request)} if the pbAnalysis has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/pb-analyses")
@@ -62,48 +62,54 @@ public class PBAnalysisResource {
         @PathVariable("projectId") Long projectId,
         @PathVariable("sampleId") Long sampleId,
         @PathVariable("protocolId") Long protocolId,
-        @Valid @RequestBody PBAnalysisDTO pBAnalysisDTO
+        @RequestParam(name = "analyze", required = false, defaultValue = "true") boolean analyze,
+        @Valid @RequestBody PBAnalysisDTO pbAnalysisDTO
     ) throws URISyntaxException {
-        log.debug("REST request to save PBAnalysis : {}", pBAnalysisDTO);
-        if (pBAnalysisDTO.getId() != null) {
-            throw new BadRequestAlertException("A new pBAnalysis cannot already have an ID", ENTITY_NAME, "idexists");
+        log.debug("REST request to save pause-burst analysis {} of project {} of sample {} of protocol {}", pbAnalysisDTO, projectId, sampleId, protocolId);
+        if (pbAnalysisDTO.getId() != null) {
+            throw new BadRequestAlertException("A new pause-burst analysis cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        PBAnalysisDTO result = pBAnalysisService.save(pBAnalysisDTO);
-        return ResponseEntity.created(new URI("/api/pb-analyses/" + result.getId()))
+        PBAnalysisDTO result;
+        if (analyze) {
+            result = pbAnalysisService.analyze(projectId, sampleId, protocolId, pbAnalysisDTO);
+        } else {
+            result = pbAnalysisService.save(projectId, sampleId, protocolId, pbAnalysisDTO);
+        }
+        return ResponseEntity.created(new URI("/api/projects/" + projectId + "/samples/" + sampleId + "/protocols/" + protocolId + "/pb-analyses/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * {@code PUT  /pb-analyses} : Updates an existing pBAnalysis.
+     * {@code PUT  /pb-analyses} : Updates an existing pause-burst analysis.
      *
      * @param projectId ID of the project of the analysis.
      * @param sampleId ID of the sample of the analysis.
      * @param protocolId ID of the protocol analyzed.
-     * @param pBAnalysisDTO the pBAnalysisDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated pBAnalysisDTO,
-     * or with status {@code 400 (Bad Request)} if the pBAnalysisDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the pBAnalysisDTO couldn't be updated.
+     * @param pbAnalysisDTO the pbAnalysisDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated pbAnalysisDTO,
+     * or with status {@code 400 (Bad Request)} if the pbAnalysisDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the pbAnalysisDTO couldn't be updated.
      */
     @PutMapping("/pb-analyses")
     public ResponseEntity<PBAnalysisDTO> updatePBAnalysis(
         @PathVariable("projectId") Long projectId,
         @PathVariable("sampleId") Long sampleId,
         @PathVariable("protocolId") Long protocolId,
-        @Valid @RequestBody PBAnalysisDTO pBAnalysisDTO
+        @Valid @RequestBody PBAnalysisDTO pbAnalysisDTO
     ) {
-        log.debug("REST request to update PBAnalysis : {}", pBAnalysisDTO);
-        if (pBAnalysisDTO.getId() == null) {
+        log.debug("REST request to update pause-burst analysis {} of project {} of sample {} of protocol {}", pbAnalysisDTO, projectId, sampleId, protocolId);
+        if (pbAnalysisDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        PBAnalysisDTO result = pBAnalysisService.save(pBAnalysisDTO);
+        PBAnalysisDTO result = pbAnalysisService.save(projectId, sampleId, protocolId, pbAnalysisDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, pBAnalysisDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, pbAnalysisDTO.getId().toString()))
             .body(result);
     }
 
     /**
-     * {@code GET  /pb-analyses} : get all the pBAnalyses.
+     * {@code GET  /pb-analyses} : get all the pause-burst analyses.
      *
      * @param projectId ID of the project of the analyses.
      * @param sampleId ID of the sample of the analyses.
@@ -120,13 +126,13 @@ public class PBAnalysisResource {
         PBAnalysisCriteria criteria, Pageable pageable
     ) {
         log.debug("REST request to get PBAnalyses by criteria: {}", criteria);
-        Page<PBAnalysisDTO> page = pBAnalysisQueryService.findByCriteria(criteria, pageable);
+        Page<PBAnalysisDTO> page = pbAnalysisQueryService.findByCriteria(projectId, sampleId, protocolId, criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-     * {@code GET  /pb-analyses/count} : count all the pBAnalyses.
+     * {@code GET  /pb-analyses/count} : count all the pause-burst analyses.
      *
      * @param projectId ID of the project of the analyses.
      * @param sampleId ID of the sample of the analyses.
@@ -142,17 +148,17 @@ public class PBAnalysisResource {
         PBAnalysisCriteria criteria
     ) {
         log.debug("REST request to count PBAnalyses by criteria: {}", criteria);
-        return ResponseEntity.ok().body(pBAnalysisQueryService.countByCriteria(criteria));
+        return ResponseEntity.ok().body(pbAnalysisQueryService.countByCriteria(projectId, sampleId, protocolId, criteria));
     }
 
     /**
-     * {@code GET  /pb-analyses/:id} : get the "id" pBAnalysis.
+     * {@code GET  /pb-analyses/:id} : get the "id" pause-burst analysis.
      *
      * @param projectId ID of the project of the analysis.
      * @param sampleId ID of the sample of the analysis.
      * @param protocolId ID of the protocol of the analysis.
-     * @param id the id of the pBAnalysisDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the pBAnalysisDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the pbAnalysisDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the pbAnalysisDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/pb-analyses/{id}")
     public ResponseEntity<PBAnalysisDTO> getPBAnalysis(
@@ -161,18 +167,18 @@ public class PBAnalysisResource {
         @PathVariable("protocolId") Long protocolId,
         @PathVariable Long id
     ) {
-        log.debug("REST request to get PBAnalysis : {}", id);
-        Optional<PBAnalysisDTO> pBAnalysisDTO = pBAnalysisService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(pBAnalysisDTO);
+        log.debug("REST request to get pause-burst analysis {} of project {} of sample {} of protocol {}", id, projectId, sampleId, protocolId);
+        Optional<PBAnalysisDTO> pbAnalysisDTO = pbAnalysisService.findOne(projectId, sampleId, protocolId, id);
+        return ResponseUtil.wrapOrNotFound(pbAnalysisDTO);
     }
 
     /**
-     * {@code DELETE  /pb-analyses/:id} : delete the "id" pBAnalysis.
+     * {@code DELETE  /pb-analyses/:id} : delete the "id" pause-burst analysis.
      *
      * @param projectId ID of the project of the analysis.
      * @param sampleId ID of the sample of the analysis.
      * @param protocolId ID of the protocol of the analysis.
-     * @param id the id of the pBAnalysisDTO to delete.
+     * @param id the id of the pbAnalysisDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/pb-analyses/{id}")
@@ -182,8 +188,8 @@ public class PBAnalysisResource {
         @PathVariable("protocolId") Long protocolId,
         @PathVariable Long id
     ) {
-        log.debug("REST request to delete PBAnalysis : {}", id);
-        pBAnalysisService.delete(id);
+        log.debug("REST request to delete pause-burst analysis {} of project {} of sample {} of protocol {}", id, projectId, sampleId, protocolId);
+        pbAnalysisService.delete(projectId, sampleId, protocolId, id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 }

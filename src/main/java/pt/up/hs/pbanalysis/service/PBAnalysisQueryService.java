@@ -1,9 +1,6 @@
 package pt.up.hs.pbanalysis.service;
 
-import java.util.List;
-
-import javax.persistence.criteria.JoinType;
-
+import io.github.jhipster.service.QueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -11,16 +8,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import io.github.jhipster.service.QueryService;
-
-import org.springframework.web.bind.annotation.PathVariable;
 import pt.up.hs.pbanalysis.domain.PBAnalysis;
-import pt.up.hs.pbanalysis.domain.*; // for static metamodels
+import pt.up.hs.pbanalysis.domain.PBAnalysis_;
+import pt.up.hs.pbanalysis.domain.PBBurst_;
 import pt.up.hs.pbanalysis.repository.PBAnalysisRepository;
 import pt.up.hs.pbanalysis.service.dto.PBAnalysisCriteria;
 import pt.up.hs.pbanalysis.service.dto.PBAnalysisDTO;
 import pt.up.hs.pbanalysis.service.mapper.PBAnalysisMapper;
+
+import javax.persistence.criteria.JoinType;
+import java.util.List;
 
 /**
  * Service for executing complex queries for {@link PBAnalysis} entities in the database.
@@ -35,7 +32,6 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
     private final Logger log = LoggerFactory.getLogger(PBAnalysisQueryService.class);
 
     private final PBAnalysisRepository pBAnalysisRepository;
-
     private final PBAnalysisMapper pBAnalysisMapper;
 
     public PBAnalysisQueryService(PBAnalysisRepository pBAnalysisRepository, PBAnalysisMapper pBAnalysisMapper) {
@@ -45,7 +41,11 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
 
     /**
      * Return a {@link List} of {@link PBAnalysisDTO} which matches the criteria from the database.
-     * @param criteria The object which holds all the filters, which the entities should match.
+     *
+     * @param projectId  ID of the project of the analyses.
+     * @param sampleId   ID of the sample of the analyses.
+     * @param protocolId ID of the protocol of the analyses.
+     * @param criteria   The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
@@ -63,8 +63,12 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
 
     /**
      * Return a {@link Page} of {@link PBAnalysisDTO} which matches the criteria from the database.
-     * @param criteria The object which holds all the filters, which the entities should match.
-     * @param page The page, which should be returned.
+     *
+     * @param projectId  ID of the project of the analyses.
+     * @param sampleId   ID of the sample of the analyses.
+     * @param protocolId ID of the protocol of the analyses.
+     * @param criteria   The object which holds all the filters, which the entities should match.
+     * @param page       The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
@@ -83,7 +87,11 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
 
     /**
      * Return the number of matching entities in the database.
-     * @param criteria The object which holds all the filters, which the entities should match.
+     *
+     * @param projectId  ID of the project of the analyses.
+     * @param sampleId   ID of the sample of the analyses.
+     * @param protocolId ID of the protocol of the analyses.
+     * @param criteria   The object which holds all the filters, which the entities should match.
      * @return the number of matching entities.
      */
     @Transactional(readOnly = true)
@@ -101,6 +109,7 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
 
     /**
      * Function to convert {@link PBAnalysisCriteria} to a {@link Specification}
+     *
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching {@link Specification} of the entity.
      */
@@ -109,6 +118,12 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
         if (criteria != null) {
             if (criteria.getId() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getId(), PBAnalysis_.id));
+            }
+            if (criteria.getName() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getName(), PBAnalysis_.name));
+            }
+            if (criteria.getDescription() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getDescription(), PBAnalysis_.description));
             }
             if (criteria.getThreshold() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getThreshold(), PBAnalysis_.threshold));

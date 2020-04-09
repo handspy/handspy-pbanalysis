@@ -6,46 +6,49 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    
+
     <!--
         Added the entity PBBurst.
     -->
     <changeSet id="20200223180818-1" author="jhipster">
-        <createTable tableName="pb_burst" remarks="Burst of the pause-burst analysis.\n\n@author José Carlos Paiva">
+        <createTable tableName="pb_burst" remarks="Burst of the pause-burst analysis.">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="text" type="varchar(255)" remarks="Text slice written in burst">
+            <column name="analysis_id" type="bigint" remarks="ID of the analysis that holds this burst.">
                 <constraints nullable="true" />
             </column>
-            <column name="pause_duration" type="bigint">
+            <column name="pause_duration" type="bigint" remarks="Duration of the pause that precedes this burst (in ms).">
                 <constraints nullable="false" />
             </column>
-            <column name="start_time" type="bigint">
+            <column name="start_time" type="bigint" remarks="Start time of this burst.">
                 <constraints nullable="false" />
             </column>
-            <column name="end_time" type="bigint">
+            <column name="end_time" type="bigint" remarks="End time of this burst.">
                 <constraints nullable="false" />
             </column>
-            <column name="start_x" type="double">
+            <column name="start_x" type="double" remarks="Start position of this burst in X-axis.">
                 <constraints nullable="false" />
             </column>
-            <column name="start_y" type="double">
+            <column name="start_y" type="double" remarks="Start position of this burst in Y-axis.">
                 <constraints nullable="false" />
             </column>
-            <column name="end_x" type="double">
+            <column name="end_x" type="double" remarks="End position of this burst in X-axis.">
                 <constraints nullable="false" />
             </column>
-            <column name="end_y" type="double">
+            <column name="end_y" type="double" remarks="End position of this burst in Y-axis.">
                 <constraints nullable="false" />
             </column>
-            <column name="distance" type="double">
+            <column name="dot_count" type="integer" remarks="Number of captured dots in this burst.">
+                <constraints nullable="false" />
+            </column>
+            <column name="distance" type="double" remarks="Distance traveled in this burst.">
                 <constraints nullable="true" />
             </column>
-            <column name="dot_count" type="integer">
-                <constraints nullable="false" />
+            <column name="pressure" type="double" remarks="Average pressure in this burst.">
+                <constraints nullable="true" />
             </column>
-            <column name="analysis_id" type="bigint">
+            <column name="text" type="varchar(500)" remarks="Text slice written in burst.">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
@@ -71,7 +74,6 @@
                   separator=";"
                   tableName="pb_burst">
             <column name="id" type="numeric"/>
-            <column name="text" type="string"/>
             <column name="pause_duration" type="numeric"/>
             <column name="start_time" type="numeric"/>
             <column name="end_time" type="numeric"/>
@@ -79,8 +81,10 @@
             <column name="start_y" type="numeric"/>
             <column name="end_x" type="numeric"/>
             <column name="end_y" type="numeric"/>
-            <column name="distance" type="numeric"/>
             <column name="dot_count" type="numeric"/>
+            <column name="distance" type="numeric"/>
+            <column name="pressure" type="numeric"/>
+            <column name="text" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here, do not remove-->
         </loadData>
     </changeSet>

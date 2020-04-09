@@ -1,15 +1,10 @@
 package pt.up.hs.pbanalysis.service.dto;
 
+import io.github.jhipster.service.Criteria;
+import io.github.jhipster.service.filter.*;
+
 import java.io.Serializable;
 import java.util.Objects;
-import io.github.jhipster.service.Criteria;
-import io.github.jhipster.service.filter.BooleanFilter;
-import io.github.jhipster.service.filter.DoubleFilter;
-import io.github.jhipster.service.filter.Filter;
-import io.github.jhipster.service.filter.FloatFilter;
-import io.github.jhipster.service.filter.IntegerFilter;
-import io.github.jhipster.service.filter.LongFilter;
-import io.github.jhipster.service.filter.StringFilter;
 
 /**
  * Criteria class for the {@link pt.up.hs.pbanalysis.domain.PBBurst} entity. This class is used
@@ -44,9 +39,9 @@ public class PBBurstCriteria implements Serializable, Criteria {
 
     private DoubleFilter distance;
 
-    private IntegerFilter dotCount;
+    private DoubleFilter pressure;
 
-    private LongFilter analysisId;
+    private IntegerFilter dotCount;
 
     public PBBurstCriteria() {
     }
@@ -62,8 +57,8 @@ public class PBBurstCriteria implements Serializable, Criteria {
         this.endX = other.endX == null ? null : other.endX.copy();
         this.endY = other.endY == null ? null : other.endY.copy();
         this.distance = other.distance == null ? null : other.distance.copy();
+        this.pressure = other.pressure == null ? null : other.pressure.copy();
         this.dotCount = other.dotCount == null ? null : other.dotCount.copy();
-        this.analysisId = other.analysisId == null ? null : other.analysisId.copy();
     }
 
     @Override
@@ -151,20 +146,20 @@ public class PBBurstCriteria implements Serializable, Criteria {
         this.distance = distance;
     }
 
+    public DoubleFilter getPressure() {
+        return pressure;
+    }
+
+    public void setPressure(DoubleFilter pressure) {
+        this.pressure = pressure;
+    }
+
     public IntegerFilter getDotCount() {
         return dotCount;
     }
 
     public void setDotCount(IntegerFilter dotCount) {
         this.dotCount = dotCount;
-    }
-
-    public LongFilter getAnalysisId() {
-        return analysisId;
-    }
-
-    public void setAnalysisId(LongFilter analysisId) {
-        this.analysisId = analysisId;
     }
 
 
@@ -179,53 +174,52 @@ public class PBBurstCriteria implements Serializable, Criteria {
         final PBBurstCriteria that = (PBBurstCriteria) o;
         return
             Objects.equals(id, that.id) &&
-            Objects.equals(text, that.text) &&
-            Objects.equals(pauseDuration, that.pauseDuration) &&
-            Objects.equals(startTime, that.startTime) &&
-            Objects.equals(endTime, that.endTime) &&
-            Objects.equals(startX, that.startX) &&
-            Objects.equals(startY, that.startY) &&
-            Objects.equals(endX, that.endX) &&
-            Objects.equals(endY, that.endY) &&
-            Objects.equals(distance, that.distance) &&
-            Objects.equals(dotCount, that.dotCount) &&
-            Objects.equals(analysisId, that.analysisId);
+                Objects.equals(text, that.text) &&
+                Objects.equals(pauseDuration, that.pauseDuration) &&
+                Objects.equals(startTime, that.startTime) &&
+                Objects.equals(endTime, that.endTime) &&
+                Objects.equals(startX, that.startX) &&
+                Objects.equals(startY, that.startY) &&
+                Objects.equals(endX, that.endX) &&
+                Objects.equals(endY, that.endY) &&
+                Objects.equals(distance, that.distance) &&
+                Objects.equals(pressure, that.pressure) &&
+                Objects.equals(dotCount, that.dotCount);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
-        id,
-        text,
-        pauseDuration,
-        startTime,
-        endTime,
-        startX,
-        startY,
-        endX,
-        endY,
-        distance,
-        dotCount,
-        analysisId
+            id,
+            text,
+            pauseDuration,
+            startTime,
+            endTime,
+            startX,
+            startY,
+            endX,
+            endY,
+            distance,
+            pressure,
+            dotCount
         );
     }
 
     @Override
     public String toString() {
         return "PBBurstCriteria{" +
-                (id != null ? "id=" + id + ", " : "") +
-                (text != null ? "text=" + text + ", " : "") +
-                (pauseDuration != null ? "pauseDuration=" + pauseDuration + ", " : "") +
-                (startTime != null ? "startTime=" + startTime + ", " : "") +
-                (endTime != null ? "endTime=" + endTime + ", " : "") +
-                (startX != null ? "startX=" + startX + ", " : "") +
-                (startY != null ? "startY=" + startY + ", " : "") +
-                (endX != null ? "endX=" + endX + ", " : "") +
-                (endY != null ? "endY=" + endY + ", " : "") +
-                (distance != null ? "distance=" + distance + ", " : "") +
-                (dotCount != null ? "dotCount=" + dotCount + ", " : "") +
-                (analysisId != null ? "analysisId=" + analysisId + ", " : "") +
+            (id != null ? "id=" + id + ", " : "") +
+            (text != null ? "text=" + text + ", " : "") +
+            (pauseDuration != null ? "pauseDuration=" + pauseDuration + ", " : "") +
+            (startTime != null ? "startTime=" + startTime + ", " : "") +
+            (endTime != null ? "endTime=" + endTime + ", " : "") +
+            (startX != null ? "startX=" + startX + ", " : "") +
+            (startY != null ? "startY=" + startY + ", " : "") +
+            (endX != null ? "endX=" + endX + ", " : "") +
+            (endY != null ? "endY=" + endY + ", " : "") +
+            (distance != null ? "distance=" + distance + ", " : "") +
+            (pressure != null ? "pressure=" + pressure + ", " : "") +
+            (dotCount != null ? "dotCount=" + dotCount + ", " : "") +
             "}";
     }
-
 }

@@ -13,33 +13,61 @@ import java.util.Optional;
 public interface PBBurstService {
 
     /**
-     * Save a pBBurst.
+     * Save a pause-burst burst.
      *
-     * @param pBBurstDTO the entity to save.
+     * @param projectId  ID of the project to which the burst belongs.
+     * @param sampleId   ID of the sample to which the burst belongs.
+     * @param protocolId ID of the protocol to which the burst belongs.
+     * @param analysisId ID of the analysis to which the burst belongs.
+     * @param pbBurstDTO the entity to save.
      * @return the persisted entity.
      */
-    PBBurstDTO save(PBBurstDTO pBBurstDTO);
+    PBBurstDTO save(
+        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        PBBurstDTO pbBurstDTO
+    );
 
     /**
-     * Get all the pBBursts.
+     * Get all the pause-burst burst.
      *
-     * @param pageable the pagination information.
+     * @param projectId  ID of the project to which the bursts belong.
+     * @param sampleId   ID of the sample to which the bursts belong.
+     * @param protocolId ID of the protocol to which the bursts belong.
+     * @param analysisId ID of the analysis to which the bursts belong.
+     * @param pageable   the pagination information.
      * @return the list of entities.
      */
-    Page<PBBurstDTO> findAll(Pageable pageable);
+    Page<PBBurstDTO> findAll(
+        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        Pageable pageable
+    );
 
     /**
-     * Get the "id" pBBurst.
+     * Get the "id" pause-burst burst.
      *
-     * @param id the id of the entity.
+     * @param projectId  ID of the project to which the burst belongs.
+     * @param sampleId   ID of the sample to which the burst belongs.
+     * @param protocolId ID of the protocol to which the burst belongs.
+     * @param analysisId ID of the analysis to which the burst belongs.
+     * @param id         the id of the entity.
      * @return the entity.
      */
-    Optional<PBBurstDTO> findOne(Long id);
+    Optional<PBBurstDTO> findOne(
+        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        Long id
+    );
 
     /**
-     * Delete the "id" pBBurst.
+     * Delete the "id" pause-burst burst.
      *
-     * @param id the id of the entity.
+     * @param projectId  ID of the project to which the burst belongs.
+     * @param sampleId   ID of the sample to which the burst belongs.
+     * @param protocolId ID of the protocol to which the burst belongs.
+     * @param analysisId ID of the analysis to which the burst belongs.
+     * @param id         the id of the entity.
      */
-    void delete(Long id);
+    void delete(
+        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        Long id
+    );
 }

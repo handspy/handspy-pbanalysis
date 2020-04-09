@@ -1,5 +1,6 @@
 package pt.up.hs.pbanalysis.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -11,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Analysis of pauses and busts in handwritten data.
+ * Analysis of pauses and bursts in handwritten data.
  *
  * @author José Carlos Paiva
  */
@@ -28,6 +29,13 @@ public class PBAnalysis implements Serializable {
     private Long id;
 
     /**
+     * ID of the project on which this analysis has been conducted.
+     */
+    @NotNull
+    @Column(name = "project_id", nullable = false)
+    private Long projectId;
+
+    /**
      * ID of the sample on which this analysis has been conducted.
      */
     @NotNull
@@ -42,14 +50,35 @@ public class PBAnalysis implements Serializable {
     private Long protocolId;
 
     /**
+     * Name of the analysis.
+     */
+    @NotNull
+    @Size(max = 200)
+    @Column(name = "name", nullable = false, length = 200)
+    private String name;
+
+    /**
+     * Description of the analysis.
+     */
+    @Size(max = 500)
+    @Column(name = "description", length = 500)
+    private String description;
+
+    /**
      * Threshold used to calculate bursts (in ms).
      */
     @NotNull
     @Column(name = "threshold", nullable = false)
     private Long threshold;
 
-    @OneToMany(mappedBy = "analysis")
+    @OneToMany(
+        mappedBy = "analysis",
+        cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY,
+        orphanRemoval = true
+    )
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnoreProperties("analysis")
     private Set<PBBurst> bursts = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -61,17 +90,30 @@ public class PBAnalysis implements Serializable {
         this.id = id;
     }
 
-    public Long getThreshold() {
-        return threshold;
+    public Long getProjectId() {
+        return projectId;
     }
 
-    public PBAnalysis threshold(Long threshold) {
-        this.threshold = threshold;
+    public PBAnalysis projectId(Long projectId) {
+        this.projectId = projectId;
         return this;
     }
 
-    public void setThreshold(Long threshold) {
-        this.threshold = threshold;
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public Long getSampleId() {
+        return sampleId;
+    }
+
+    public PBAnalysis sampleId(Long sampleId) {
+        this.sampleId = sampleId;
+        return this;
+    }
+
+    public void setSampleId(Long sampleId) {
+        this.sampleId = sampleId;
     }
 
     public Long getProtocolId() {
@@ -87,17 +129,43 @@ public class PBAnalysis implements Serializable {
         this.protocolId = protocolId;
     }
 
-    public Long getSampleId() {
-        return sampleId;
+    public String getName() {
+        return name;
     }
 
-    public PBAnalysis sampleId(Long sampleId) {
-        this.sampleId = sampleId;
+    public PBAnalysis name(String name) {
+        this.name = name;
         return this;
     }
 
-    public void setSampleId(Long sampleId) {
-        this.sampleId = sampleId;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public PBAnalysis description(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Long getThreshold() {
+        return threshold;
+    }
+
+    public PBAnalysis threshold(Long threshold) {
+        this.threshold = threshold;
+        return this;
+    }
+
+    public void setThreshold(Long threshold) {
+        this.threshold = threshold;
     }
 
     public Set<PBBurst> getBursts() {
@@ -146,8 +214,11 @@ public class PBAnalysis implements Serializable {
     public String toString() {
         return "PBAnalysis{" +
             "id=" + getId() +
-            ", protocolId=" + getProtocolId() +
+            ", projectIdId=" + getProjectId() +
             ", sampleId=" + getSampleId() +
+            ", protocolId=" + getProtocolId() +
+            ", name=" + getName() +
+            ", description=" + getDescription() +
             ", threshold=" + getThreshold() +
             "}";
     }

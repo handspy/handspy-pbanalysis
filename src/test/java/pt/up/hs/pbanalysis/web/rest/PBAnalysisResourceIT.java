@@ -1,21 +1,11 @@
 package pt.up.hs.pbanalysis.web.rest;
 
-import pt.up.hs.pbanalysis.PBAnalysisApp;
-import pt.up.hs.pbanalysis.config.SecurityBeanOverrideConfiguration;
-import pt.up.hs.pbanalysis.domain.PBAnalysis;
-import pt.up.hs.pbanalysis.domain.PBBurst;
-import pt.up.hs.pbanalysis.repository.PBAnalysisRepository;
-import pt.up.hs.pbanalysis.service.PBAnalysisService;
-import pt.up.hs.pbanalysis.service.dto.PBAnalysisDTO;
-import pt.up.hs.pbanalysis.service.mapper.PBAnalysisMapper;
-import pt.up.hs.pbanalysis.web.rest.errors.ExceptionTranslator;
-import pt.up.hs.pbanalysis.service.PBAnalysisQueryService;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -23,20 +13,40 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
+import pt.up.hs.pbanalysis.PBAnalysisApp;
+import pt.up.hs.pbanalysis.client.sampling.SamplingFeignClient;
+import pt.up.hs.pbanalysis.client.sampling.dto.Dot;
+import pt.up.hs.pbanalysis.client.sampling.dto.DotType;
+import pt.up.hs.pbanalysis.client.sampling.dto.Stroke;
+import pt.up.hs.pbanalysis.config.SecurityBeanOverrideConfiguration;
+import pt.up.hs.pbanalysis.domain.PBAnalysis;
+import pt.up.hs.pbanalysis.domain.PBBurst;
+import pt.up.hs.pbanalysis.repository.PBAnalysisRepository;
+import pt.up.hs.pbanalysis.service.PBAnalysisQueryService;
+import pt.up.hs.pbanalysis.service.PBAnalysisService;
+import pt.up.hs.pbanalysis.service.dto.PBAnalysisDTO;
+import pt.up.hs.pbanalysis.service.mapper.PBAnalysisMapper;
+import pt.up.hs.pbanalysis.web.rest.errors.ExceptionTranslator;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
-import static pt.up.hs.pbanalysis.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static pt.up.hs.pbanalysis.web.rest.TestUtil.createFormattingConversionService;
 
 /**
  * Integration tests for the {@link PBAnalysisResource} REST controller.
  */
-@SpringBootTest(classes = {SecurityBeanOverrideConfiguration.class, PBAnalysisApp.class})
+@SpringBootTest(
+    classes = {SecurityBeanOverrideConfiguration.class, PBAnalysisApp.class},
+    properties = {"feign.hystrix.enabled=true"}
+)
 public class PBAnalysisResourceIT {
 
     private static final Long DEFAULT_PROJECT_ID = 1L;
@@ -53,7 +63,7 @@ public class PBAnalysisResourceIT {
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
     private static final Long DEFAULT_THRESHOLD = 1L;
-    private static final Long UPDATED_THRESHOLD = 2L;
+    private static final Long UPDATED_THRESHOLD = 150L;
     private static final Long SMALLER_THRESHOLD = 1L - 1L;
 
     @Autowired
@@ -85,6 +95,9 @@ public class PBAnalysisResourceIT {
 
     private MockMvc restPBAnalysisMockMvc;
 
+    @MockBean
+    private SamplingFeignClient samplingFeignClient;
+
     private PBAnalysis pbAnalysis;
 
     @BeforeEach
@@ -97,6 +110,53 @@ public class PBAnalysisResourceIT {
             .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter)
             .setValidator(validator).build();
+    }
+
+    public List<Stroke> getStrokes() {
+
+        List<Stroke> strokes = new ArrayList<>();
+
+        Stroke stroke1 = new Stroke();
+        stroke1.setId(1L);
+        stroke1.setProtocolId(DEFAULT_PROTOCOL_ID);
+        stroke1.setStartTime(0L);
+        stroke1.setEndTime(999L);
+        stroke1.setDots(getRandomDots(5, 0L, 999L));
+        strokes.add(stroke1);
+
+        Stroke stroke2 = new Stroke();
+        stroke2.setId(2L);
+        stroke2.setProtocolId(DEFAULT_PROTOCOL_ID);
+        stroke2.setStartTime(1000L);
+        stroke2.setEndTime(2499L);
+        stroke2.setDots(getRandomDots(10, 1000L, 2499L));
+        strokes.add(stroke2);
+
+        Stroke stroke3 = new Stroke();
+        stroke3.setId(3L);
+        stroke3.setProtocolId(DEFAULT_PROTOCOL_ID);
+        stroke3.setStartTime(2500L);
+        stroke3.setEndTime(3000L);
+        stroke3.setDots(getRandomDots(7, 2500L, 3000L));
+        strokes.add(stroke3);
+
+        return strokes;
+    }
+
+    public List<Dot> getRandomDots(int count, long startTime, long endTime) {
+        List<Dot> dots = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            long captureInterval = (long) (((double) endTime - startTime) / count);
+            Dot dot = new Dot();
+            dot.setId(ThreadLocalRandom.current().nextLong(100000L));
+            dot.setTimestamp(startTime + captureInterval * i);
+            dot.setX(ThreadLocalRandom.current().nextDouble(1000D));
+            dot.setY(ThreadLocalRandom.current().nextDouble(1000D));
+            dot.setPressure(ThreadLocalRandom.current().nextDouble());
+            dot.setType(DotType.DOWN);
+            dots.add(dot);
+        }
+        return dots;
     }
 
     /**
@@ -114,6 +174,7 @@ public class PBAnalysisResourceIT {
             .description(DEFAULT_DESCRIPTION)
             .threshold(DEFAULT_THRESHOLD);
     }
+
     /**
      * Create an updated entity for this test.
      *
@@ -140,14 +201,14 @@ public class PBAnalysisResourceIT {
     public void createPBAnalysis() throws Exception {
         int databaseSizeBeforeCreate = pbAnalysisRepository.findAll().size();
 
-        // Create the PBAnalysis
+        // Create the Pause-Burst Analysis
         PBAnalysisDTO pBAnalysisDTO = pBAnalysisMapper.toDto(pbAnalysis);
         restPBAnalysisMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses?analyze=false", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID)
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBAnalysisDTO)))
             .andExpect(status().isCreated());
 
-        // Validate the PBAnalysis in the database
+        // Validate the Pause-Burst Analysis in the database
         List<PBAnalysis> pbAnalysisList = pbAnalysisRepository.findAll();
         assertThat(pbAnalysisList).hasSize(databaseSizeBeforeCreate + 1);
         PBAnalysis testPBAnalysis = pbAnalysisList.get(pbAnalysisList.size() - 1);
@@ -156,6 +217,36 @@ public class PBAnalysisResourceIT {
         assertThat(testPBAnalysis.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testPBAnalysis.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testPBAnalysis.getThreshold()).isEqualTo(DEFAULT_THRESHOLD);
+    }
+
+    @Test
+    @Transactional
+    public void createPBAnalysisWithAnalyze() throws Exception {
+
+        when(
+            samplingFeignClient.getProtocolStrokes(DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
+        ).thenReturn(getStrokes());
+
+        int databaseSizeBeforeCreate = pbAnalysisRepository.findAll().size();
+
+        // Create the Pause-Burst Analysis
+        PBAnalysisDTO pBAnalysisDTO = pBAnalysisMapper.toDto(pbAnalysis);
+        restPBAnalysisMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID)
+            .contentType(TestUtil.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(pBAnalysisDTO)))
+            .andExpect(status().isCreated());
+
+        // Validate the Pause-Burst Analysis in the database
+        List<PBAnalysis> pbAnalysisList = pbAnalysisRepository.findAll();
+        assertThat(pbAnalysisList).hasSize(databaseSizeBeforeCreate + 1);
+        PBAnalysis testPBAnalysis = pbAnalysisList.get(pbAnalysisList.size() - 1);
+        assertThat(testPBAnalysis.getProjectId()).isEqualTo(DEFAULT_PROJECT_ID);
+        assertThat(testPBAnalysis.getSampleId()).isEqualTo(DEFAULT_SAMPLE_ID);
+        assertThat(testPBAnalysis.getProtocolId()).isEqualTo(DEFAULT_PROTOCOL_ID);
+        assertThat(testPBAnalysis.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testPBAnalysis.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testPBAnalysis.getThreshold()).isEqualTo(DEFAULT_THRESHOLD);
+        assertThat(testPBAnalysis.getBursts()).hasSize(22);
     }
 
     @Test
@@ -610,6 +701,50 @@ public class PBAnalysisResourceIT {
         assertThat(testPBAnalysis.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testPBAnalysis.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testPBAnalysis.getThreshold()).isEqualTo(UPDATED_THRESHOLD);
+    }
+
+    @Test
+    @Transactional
+    public void updatePBAnalysisWithAnalyze() throws Exception {
+
+        when(
+            samplingFeignClient.getProtocolStrokes(DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
+        ).thenReturn(getStrokes());
+
+        // Initialize the database
+        pbAnalysisRepository.saveAndFlush(pbAnalysis);
+
+        int databaseSizeBeforeUpdate = pbAnalysisRepository.findAll().size();
+
+        // Update the pBAnalysis
+        PBAnalysis updatedPBAnalysis = pbAnalysisRepository.findById(pbAnalysis.getId()).get();
+        // Disconnect from session so that the updates on updatedPBAnalysis are not directly saved in db
+        em.detach(updatedPBAnalysis);
+        updatedPBAnalysis
+            .projectId(OTHER_PROJECT_ID)
+            .sampleId(OTHER_SAMPLE_ID)
+            .protocolId(OTHER_PROTOCOL_ID)
+            .name(UPDATED_NAME)
+            .description(UPDATED_DESCRIPTION)
+            .threshold(UPDATED_THRESHOLD);
+        PBAnalysisDTO pBAnalysisDTO = pBAnalysisMapper.toDto(updatedPBAnalysis);
+
+        restPBAnalysisMockMvc.perform(put("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses?analyze=true", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID)
+            .contentType(TestUtil.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(pBAnalysisDTO)))
+            .andExpect(status().isOk());
+
+        // Validate the PBAnalysis in the database
+        List<PBAnalysis> pbAnalysisList = pbAnalysisRepository.findAll();
+        assertThat(pbAnalysisList).hasSize(databaseSizeBeforeUpdate);
+        PBAnalysis testPBAnalysis = pbAnalysisList.get(pbAnalysisList.size() - 1);
+        assertThat(testPBAnalysis.getProjectId()).isEqualTo(DEFAULT_PROJECT_ID);
+        assertThat(testPBAnalysis.getSampleId()).isEqualTo(DEFAULT_SAMPLE_ID);
+        assertThat(testPBAnalysis.getProtocolId()).isEqualTo(DEFAULT_PROTOCOL_ID);
+        assertThat(testPBAnalysis.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testPBAnalysis.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testPBAnalysis.getThreshold()).isEqualTo(UPDATED_THRESHOLD);
+        assertThat(testPBAnalysis.getBursts()).hasSize(7);
     }
 
     @Test

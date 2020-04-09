@@ -1,5 +1,6 @@
 package pt.up.hs.pbanalysis.service.impl;
 
+import org.springframework.http.ResponseEntity;
 import pt.up.hs.pbanalysis.client.sampling.SamplingFeignClient;
 import pt.up.hs.pbanalysis.client.sampling.dto.Stroke;
 import pt.up.hs.pbanalysis.service.PBAnalysisService;

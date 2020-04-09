@@ -22,15 +22,15 @@ import java.util.concurrent.Executors;
 
 @RestController
 @RequestMapping("/api/pbanalysis-kafka")
-public class PbanalysisKafkaResource {
+public class PBAnalysisKafkaResource {
 
-    private final Logger log = LoggerFactory.getLogger(PbanalysisKafkaResource.class);
+    private final Logger log = LoggerFactory.getLogger(PBAnalysisKafkaResource.class);
 
     private final KafkaProperties kafkaProperties;
     private KafkaProducer<String, String> producer;
     private ExecutorService sseExecutorService = Executors.newCachedThreadPool();
 
-    public PbanalysisKafkaResource(KafkaProperties kafkaProperties) {
+    public PBAnalysisKafkaResource(KafkaProperties kafkaProperties) {
         this.kafkaProperties = kafkaProperties;
         this.producer = new KafkaProducer<>(kafkaProperties.getProducerProps());
     }

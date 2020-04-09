@@ -56,7 +56,7 @@ class PBAnalysisKafkaResourceIT {
         consumerProps.put("client.id", "default-client");
         kafkaProperties.setConsumer(consumerProps);
 
-        PbanalysisKafkaResource kafkaResource = new PbanalysisKafkaResource(kafkaProperties);
+        PBAnalysisKafkaResource kafkaResource = new PBAnalysisKafkaResource(kafkaProperties);
 
         restMockMvc = MockMvcBuilders.standaloneSetup(kafkaResource).build();
     }

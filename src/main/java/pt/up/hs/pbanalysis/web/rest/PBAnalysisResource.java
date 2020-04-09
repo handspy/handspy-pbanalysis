@@ -96,13 +96,19 @@ public class PBAnalysisResource {
         @PathVariable("projectId") Long projectId,
         @PathVariable("sampleId") Long sampleId,
         @PathVariable("protocolId") Long protocolId,
+        @RequestParam(name = "analyze", required = false, defaultValue = "false") boolean analyze,
         @Valid @RequestBody PBAnalysisDTO pbAnalysisDTO
     ) {
         log.debug("REST request to update pause-burst analysis {} of project {} of sample {} of protocol {}", pbAnalysisDTO, projectId, sampleId, protocolId);
         if (pbAnalysisDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        PBAnalysisDTO result = pbAnalysisService.save(projectId, sampleId, protocolId, pbAnalysisDTO);
+        PBAnalysisDTO result;
+        if (analyze) {
+            result = pbAnalysisService.analyze(projectId, sampleId, protocolId, pbAnalysisDTO);
+        } else {
+            result = pbAnalysisService.save(projectId, sampleId, protocolId, pbAnalysisDTO);
+        }
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, pbAnalysisDTO.getId().toString()))
             .body(result);

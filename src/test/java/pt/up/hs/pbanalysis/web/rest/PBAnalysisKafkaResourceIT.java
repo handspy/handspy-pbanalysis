@@ -36,12 +36,12 @@ class PBAnalysisKafkaResourceIT {
     @BeforeAll
     static void startServer() {
         if (!started) {
-            startTestcontainer();
+            startTestContainer();
             started = true;
         }
     }
 
-    private static void startTestcontainer() {
+    private static void startTestContainer() {
         kafkaContainer = new KafkaContainer("5.4.0");
         kafkaContainer.start();
     }

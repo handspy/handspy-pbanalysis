@@ -186,18 +186,18 @@ jhipster:
   #     allow-credentials: true
   #     max-age: 1800
   mail:
-    from: pbanalysis@localhost
+    from: support@handspy.up.pt
   swagger:
     default-include-pattern: /api/.*
-    title: pbanalysis API
-    description: pbanalysis API documentation
+    title: HandSpy Pause-Burst Analysis Microservice API
+    description: HandSpy Pause-Burst Analysis Microservice API documentation
     version: 0.0.1
-    terms-of-service-url:
-    contact-name:
-    contact-url:
-    contact-email:
-    license:
-    license-url:
+    terms-of-service-url: https://handspy.up.pt/terms-of-service
+    contact-name: HandSpy Support Team
+    contact-url: https://handspy.up.pt/contact
+    contact-email: support@handspy.up.pt
+    license: GNU GPLv3
+    license-url: https://www.gnu.org/licenses/gpl-3.0.html
 kafka:
   bootstrap-servers: localhost:9092
   consumer:

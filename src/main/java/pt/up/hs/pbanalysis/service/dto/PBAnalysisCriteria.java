@@ -2,14 +2,9 @@ package pt.up.hs.pbanalysis.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
+
 import io.github.jhipster.service.Criteria;
-import io.github.jhipster.service.filter.BooleanFilter;
-import io.github.jhipster.service.filter.DoubleFilter;
-import io.github.jhipster.service.filter.Filter;
-import io.github.jhipster.service.filter.FloatFilter;
-import io.github.jhipster.service.filter.IntegerFilter;
-import io.github.jhipster.service.filter.LongFilter;
-import io.github.jhipster.service.filter.StringFilter;
+import io.github.jhipster.service.filter.*;
 
 /**
  * Criteria class for the {@link pt.up.hs.pbanalysis.domain.PBAnalysis} entity. This class is used
@@ -32,6 +27,14 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
 
     private LongFilter threshold;
 
+    private StringFilter createdBy;
+
+    private InstantFilter createdDate;
+
+    private StringFilter lastModifiedBy;
+
+    private InstantFilter lastModifiedDate;
+
     private LongFilter burstsId;
 
     public PBAnalysisCriteria() {
@@ -42,6 +45,10 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
         this.name = other.name == null ? null : other.name.copy();
         this.description = other.description == null ? null : other.description.copy();
         this.threshold = other.threshold == null ? null : other.threshold.copy();
+        this.createdBy = other.createdBy == null ? null : other.createdBy.copy();
+        this.createdDate = other.createdDate == null ? null : other.createdDate.copy();
+        this.lastModifiedBy = other.lastModifiedBy == null ? null : other.lastModifiedBy.copy();
+        this.lastModifiedDate = other.lastModifiedDate == null ? null : other.lastModifiedDate.copy();
         this.burstsId = other.burstsId == null ? null : other.burstsId.copy();
     }
 
@@ -82,6 +89,38 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
         this.threshold = threshold;
     }
 
+    public StringFilter getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(StringFilter createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public InstantFilter getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(InstantFilter createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public StringFilter getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(StringFilter lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public InstantFilter getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(InstantFilter lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
     public LongFilter getBurstsId() {
         return burstsId;
     }
@@ -102,10 +141,14 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
         final PBAnalysisCriteria that = (PBAnalysisCriteria) o;
         return
             Objects.equals(id, that.id) &&
-            Objects.equals(name, that.name) &&
-            Objects.equals(description, that.description) &&
-            Objects.equals(threshold, that.threshold) &&
-            Objects.equals(burstsId, that.burstsId);
+                Objects.equals(name, that.name) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(threshold, that.threshold) &&
+                Objects.equals(createdBy, that.createdBy) &&
+                Objects.equals(createdDate, that.createdDate) &&
+                Objects.equals(lastModifiedBy, that.lastModifiedBy) &&
+                Objects.equals(lastModifiedDate, that.lastModifiedDate) &&
+                Objects.equals(burstsId, that.burstsId);
     }
 
     @Override
@@ -115,6 +158,10 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
             name,
             description,
             threshold,
+            createdBy,
+            createdDate,
+            lastModifiedBy,
+            lastModifiedDate,
             burstsId
         );
     }
@@ -122,12 +169,15 @@ public class PBAnalysisCriteria implements Serializable, Criteria {
     @Override
     public String toString() {
         return "PBAnalysisCriteria{" +
-                (id != null ? "id=" + id + ", " : "") +
-                (threshold != null ? "threshold=" + threshold + ", " : "") +
-                (name != null ? "name=" + name + ", " : "") +
-                (description != null ? "description=" + description + ", " : "") +
-                (burstsId != null ? "burstsId=" + burstsId + ", " : "") +
-            "}";
+            (id != null ? "id=" + id + ", " : "") +
+            (name != null ? "name=" + name + ", " : "") +
+            (description != null ? "description=" + description + ", " : "") +
+            (threshold != null ? "threshold=" + threshold + ", " : "") +
+            (createdBy != null ? "createdBy=" + createdBy + ", " : "") +
+            (createdDate != null ? "createdDate=" + createdDate + ", " : "") +
+            (lastModifiedBy != null ? "lastModifiedBy=" + lastModifiedBy + ", " : "") +
+            (lastModifiedDate != null ? "lastModifiedDate=" + lastModifiedDate + ", " : "") +
+            (burstsId != null ? "burstsId=" + burstsId + ", " : "") +
+        "}";
     }
-
 }

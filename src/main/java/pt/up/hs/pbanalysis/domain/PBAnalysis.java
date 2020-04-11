@@ -19,7 +19,7 @@ import java.util.Set;
 @Entity
 @Table(name = "pb_analysis")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class PBAnalysis implements Serializable {
+public class PBAnalysis extends AbstractAuditingEntity {
 
     private static final long serialVersionUID = 1L;
 

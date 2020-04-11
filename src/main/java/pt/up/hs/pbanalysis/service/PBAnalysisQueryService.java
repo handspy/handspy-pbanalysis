@@ -31,12 +31,12 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
 
     private final Logger log = LoggerFactory.getLogger(PBAnalysisQueryService.class);
 
-    private final PBAnalysisRepository pBAnalysisRepository;
-    private final PBAnalysisMapper pBAnalysisMapper;
+    private final PBAnalysisRepository pbAnalysisRepository;
+    private final PBAnalysisMapper pbAnalysisMapper;
 
-    public PBAnalysisQueryService(PBAnalysisRepository pBAnalysisRepository, PBAnalysisMapper pBAnalysisMapper) {
-        this.pBAnalysisRepository = pBAnalysisRepository;
-        this.pBAnalysisMapper = pBAnalysisMapper;
+    public PBAnalysisQueryService(PBAnalysisRepository pbAnalysisRepository, PBAnalysisMapper pbAnalysisMapper) {
+        this.pbAnalysisRepository = pbAnalysisRepository;
+        this.pbAnalysisMapper = pbAnalysisMapper;
     }
 
     /**
@@ -58,7 +58,7 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
             .and(equalsSpecification(root -> root.get("projectId"), projectId))
             .and(equalsSpecification(root -> root.get("sampleId"), sampleId))
             .and(equalsSpecification(root -> root.get("protocolId"), protocolId));
-        return pBAnalysisMapper.toDto(pBAnalysisRepository.findAll(specification));
+        return pbAnalysisMapper.toDto(pbAnalysisRepository.findAll(specification));
     }
 
     /**
@@ -81,8 +81,8 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
             .and(equalsSpecification(root -> root.get("projectId"), projectId))
             .and(equalsSpecification(root -> root.get("sampleId"), sampleId))
             .and(equalsSpecification(root -> root.get("protocolId"), protocolId));
-        return pBAnalysisRepository.findAll(specification, page)
-            .map(pBAnalysisMapper::toDto);
+        return pbAnalysisRepository.findAll(specification, page)
+            .map(pbAnalysisMapper::toDto);
     }
 
     /**
@@ -104,7 +104,7 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
             .and(equalsSpecification(root -> root.get("projectId"), projectId))
             .and(equalsSpecification(root -> root.get("sampleId"), sampleId))
             .and(equalsSpecification(root -> root.get("protocolId"), protocolId));
-        return pBAnalysisRepository.count(specification);
+        return pbAnalysisRepository.count(specification);
     }
 
     /**
@@ -127,6 +127,9 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
             }
             if (criteria.getThreshold() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getThreshold(), PBAnalysis_.threshold));
+            }
+            if (criteria.getCreatedDate() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getCreatedDate(), PBAnalysis_.createdDate));
             }
             if (criteria.getBurstsId() != null) {
                 specification = specification.and(buildSpecification(criteria.getBurstsId(),

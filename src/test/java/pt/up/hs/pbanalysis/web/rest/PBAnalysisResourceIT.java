@@ -66,6 +66,12 @@ public class PBAnalysisResourceIT {
     private static final Long UPDATED_THRESHOLD = 150L;
     private static final Long SMALLER_THRESHOLD = 1L - 1L;
 
+    private static final String DEFAULT_CREATED_BY = "system";
+    private static final String UPDATED_CREATED_BY = "system";
+
+    private static final String DEFAULT_LAST_MODIFIED_BY = "system";
+    private static final String UPDATED_LAST_MODIFIED_BY = "system";
+
     @Autowired
     private PBAnalysisRepository pbAnalysisRepository;
 
@@ -323,7 +329,8 @@ public class PBAnalysisResourceIT {
             .andExpect(jsonPath("$.[*].protocolId").value(hasItem(DEFAULT_PROTOCOL_ID.intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
-            .andExpect(jsonPath("$.[*].threshold").value(hasItem(DEFAULT_THRESHOLD.intValue())));
+            .andExpect(jsonPath("$.[*].threshold").value(hasItem(DEFAULT_THRESHOLD.intValue())))
+            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)));
     }
 
     @Test
@@ -341,9 +348,10 @@ public class PBAnalysisResourceIT {
             .andExpect(jsonPath("$.protocolId").value(DEFAULT_PROTOCOL_ID.intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
-            .andExpect(jsonPath("$.threshold").value(DEFAULT_THRESHOLD.intValue()));
+            .andExpect(jsonPath("$.threshold").value(DEFAULT_THRESHOLD.intValue()))
+            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
+            .andExpect(jsonPath("$.lastModifiedBy").value(DEFAULT_LAST_MODIFIED_BY));
     }
-
 
     @Test
     @Transactional
@@ -630,7 +638,8 @@ public class PBAnalysisResourceIT {
             .andExpect(jsonPath("$.[*].protocolId").value(hasItem(DEFAULT_PROTOCOL_ID.intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
-            .andExpect(jsonPath("$.[*].threshold").value(hasItem(DEFAULT_THRESHOLD.intValue())));
+            .andExpect(jsonPath("$.[*].threshold").value(hasItem(DEFAULT_THRESHOLD.intValue())))
+            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)));
 
         // Check, that the count call also returns 1
         restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/count?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID))
@@ -744,6 +753,8 @@ public class PBAnalysisResourceIT {
         assertThat(testPBAnalysis.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testPBAnalysis.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testPBAnalysis.getThreshold()).isEqualTo(UPDATED_THRESHOLD);
+        assertThat(testPBAnalysis.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
+        assertThat(testPBAnalysis.getLastModifiedBy()).isEqualTo(UPDATED_LAST_MODIFIED_BY);
         assertThat(testPBAnalysis.getBursts()).hasSize(7);
     }
 

@@ -2,8 +2,9 @@ package pt.up.hs.pbanalysis.service.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.*;
-import java.io.Serializable;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,7 +15,7 @@ import java.util.Objects;
  * @author José Carlos Paiva
  */
 @ApiModel(description = "Analysis of pauses and busts in handwritten data.")
-public class PBAnalysisDTO implements Serializable {
+public class PBAnalysisDTO extends AbstractAuditingDTO {
 
     private Long id;
 
@@ -64,7 +65,10 @@ public class PBAnalysisDTO implements Serializable {
     @ApiModelProperty(value = "Threshold used to calculate bursts (in ms).")
     private Long threshold;
 
-
+    /**
+     * Bursts of this analysis.
+     */
+    @ApiModelProperty(value = "Bursts of this analysis.")
     private List<PBBurstDTO> bursts = new ArrayList<>();
 
 

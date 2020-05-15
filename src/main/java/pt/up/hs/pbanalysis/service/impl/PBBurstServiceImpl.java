@@ -36,7 +36,6 @@ public class PBBurstServiceImpl implements PBBurstService {
      * Save a pause-burst burst.
      *
      * @param projectId  ID of the project to which the burst belongs.
-     * @param sampleId   ID of the sample to which the burst belongs.
      * @param protocolId ID of the protocol to which the burst belongs.
      * @param analysisId ID of the analysis to which the burst belongs.
      * @param pbBurstDTO the entity to save.
@@ -44,10 +43,10 @@ public class PBBurstServiceImpl implements PBBurstService {
      */
     @Override
     public PBBurstDTO save(
-        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        Long projectId, Long protocolId, Long analysisId,
         PBBurstDTO pbBurstDTO
     ) {
-        log.debug("Request to save pause-burst burst {} of project {} of sample {} of protocol {} of analysis {}", pbBurstDTO, projectId, sampleId, protocolId, analysisId);
+        log.debug("Request to save pause-burst burst {} of project {} of protocol {} of analysis {}", pbBurstDTO, projectId, protocolId, analysisId);
         PBBurst pBBurst = pbBurstMapper.toEntity(pbBurstDTO);
         pBBurst = pbBurstRepository.save(pBBurst);
         return pbBurstMapper.toDto(pBBurst);
@@ -57,7 +56,6 @@ public class PBBurstServiceImpl implements PBBurstService {
      * Get all the pause-burst bursts.
      *
      * @param projectId  ID of the project to which the bursts belong.
-     * @param sampleId   ID of the sample to which the bursts belong.
      * @param protocolId ID of the protocol to which the bursts belong.
      * @param analysisId ID of the analysis to which the bursts belong.
      * @param pageable   the pagination information.
@@ -66,10 +64,10 @@ public class PBBurstServiceImpl implements PBBurstService {
     @Override
     @Transactional(readOnly = true)
     public Page<PBBurstDTO> findAll(
-        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        Long projectId, Long protocolId, Long analysisId,
         Pageable pageable
     ) {
-        log.debug("Request to get all pause-burst bursts of project {} of sample {} of protocol {} of analysis {}", projectId, sampleId, protocolId, analysisId);
+        log.debug("Request to get all pause-burst bursts of project {} of protocol {} of analysis {}", projectId, protocolId, analysisId);
         return pbBurstRepository.findAll(pageable)
             .map(pbBurstMapper::toDto);
     }
@@ -78,7 +76,6 @@ public class PBBurstServiceImpl implements PBBurstService {
      * Get the "id" pause-burst burst.
      *
      * @param projectId  ID of the project to which the burst belongs.
-     * @param sampleId   ID of the sample to which the burst belongs.
      * @param protocolId ID of the protocol to which the burst belongs.
      * @param analysisId ID of the analysis to which the burst belongs.
      * @param id         the id of the entity.
@@ -87,10 +84,10 @@ public class PBBurstServiceImpl implements PBBurstService {
     @Override
     @Transactional(readOnly = true)
     public Optional<PBBurstDTO> findOne(
-        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        Long projectId, Long protocolId, Long analysisId,
         Long id
     ) {
-        log.debug("Request to get pause-burst burst {} of project {} of sample {} of protocol {} of analysis {}", id, projectId, sampleId, protocolId, analysisId);
+        log.debug("Request to get pause-burst burst {} of project {} of protocol {} of analysis {}", id, projectId, protocolId, analysisId);
         return pbBurstRepository.findById(id)
             .map(pbBurstMapper::toDto);
     }
@@ -99,17 +96,16 @@ public class PBBurstServiceImpl implements PBBurstService {
      * Delete the "id" pause-burst burst.
      *
      * @param projectId  ID of the project to which the burst belongs.
-     * @param sampleId   ID of the sample to which the burst belongs.
      * @param protocolId ID of the protocol to which the burst belongs.
      * @param analysisId ID of the analysis to which the burst belongs.
      * @param id         the id of the entity.
      */
     @Override
     public void delete(
-        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        Long projectId, Long protocolId, Long analysisId,
         Long id
     ) {
-        log.debug("Request to delete pause-burst burst {} of project {} of sample {} of protocol {} of analysis {}", id, projectId, sampleId, protocolId, analysisId);
+        log.debug("Request to delete pause-burst burst {} of project {} of protocol {} of analysis {}", id, projectId, protocolId, analysisId);
         pbBurstRepository.deleteById(id);
     }
 }

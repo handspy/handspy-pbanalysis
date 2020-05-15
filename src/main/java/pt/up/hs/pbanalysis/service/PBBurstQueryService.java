@@ -45,7 +45,6 @@ public class PBBurstQueryService extends QueryService<PBBurst> {
      * Return a {@link List} of {@link PBBurstDTO} which matches the criteria from the database.
      *
      * @param projectId  ID of the project of the bursts.
-     * @param sampleId   ID of the sample of the bursts.
      * @param protocolId ID of the protocol of the bursts.
      * @param analysisId ID of the analysis of the bursts.
      * @param criteria   The object which holds all the filters, which the entities should match.
@@ -53,10 +52,10 @@ public class PBBurstQueryService extends QueryService<PBBurst> {
      */
     @Transactional(readOnly = true)
     public List<PBBurstDTO> findByCriteria(
-        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        Long projectId, Long protocolId, Long analysisId,
         PBBurstCriteria criteria
     ) {
-        log.debug("find by criteria {} in analysis {} of protocol {} of sample {} of project {}", criteria, analysisId, protocolId, sampleId, projectId);
+        log.debug("find by criteria {} in analysis {} of protocol {} of project {}", criteria, analysisId, protocolId, projectId);
         final Specification<PBBurst> specification = createSpecification(criteria);
         return pBBurstMapper.toDto(pBBurstRepository.findAll(specification));
     }
@@ -65,7 +64,6 @@ public class PBBurstQueryService extends QueryService<PBBurst> {
      * Return a {@link Page} of {@link PBBurstDTO} which matches the criteria from the database.
      *
      * @param projectId  ID of the project of the bursts.
-     * @param sampleId   ID of the sample of the bursts.
      * @param protocolId ID of the protocol of the bursts.
      * @param analysisId ID of the analysis of the bursts.
      * @param criteria   The object which holds all the filters, which the entities should match.
@@ -74,10 +72,10 @@ public class PBBurstQueryService extends QueryService<PBBurst> {
      */
     @Transactional(readOnly = true)
     public Page<PBBurstDTO> findByCriteria(
-        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        Long projectId, Long protocolId, Long analysisId,
         PBBurstCriteria criteria, Pageable page
     ) {
-        log.debug("find by criteria {}, page {} in analysis {} of protocol {} of sample {} of project {}", criteria, page, analysisId, protocolId, sampleId, projectId);
+        log.debug("find by criteria {}, page {} in analysis {} of protocol {} of project {}", criteria, page, analysisId, protocolId, projectId);
         final Specification<PBBurst> specification = createSpecification(criteria);
         return pBBurstRepository.findAll(specification, page)
             .map(pBBurstMapper::toDto);
@@ -87,7 +85,6 @@ public class PBBurstQueryService extends QueryService<PBBurst> {
      * Return the number of matching entities in the database.
      *
      * @param projectId  ID of the project of the bursts.
-     * @param sampleId   ID of the sample of the bursts.
      * @param protocolId ID of the protocol of the bursts.
      * @param analysisId ID of the analysis of the bursts.
      * @param criteria   The object which holds all the filters, which the
@@ -96,10 +93,10 @@ public class PBBurstQueryService extends QueryService<PBBurst> {
      */
     @Transactional(readOnly = true)
     public long countByCriteria(
-        Long projectId, Long sampleId, Long protocolId, Long analysisId,
+        Long projectId, Long protocolId, Long analysisId,
         PBBurstCriteria criteria
     ) {
-        log.debug("count by criteria {} in analysis {} of protocol {} of sample {} of project {}", criteria, analysisId, protocolId, sampleId, projectId);
+        log.debug("count by criteria {} in analysis {} of protocol {} of of project {}", criteria, analysisId, protocolId, projectId);
         final Specification<PBBurst> specification = createSpecification(criteria);
         return pBBurstRepository.count(specification);
     }

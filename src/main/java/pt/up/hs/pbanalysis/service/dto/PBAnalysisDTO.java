@@ -22,23 +22,13 @@ public class PBAnalysisDTO extends AbstractAuditingDTO {
     /**
      * ID of the project on which this analysis has been conducted.
      */
-    @NotNull
     @ApiModelProperty(value = "ID of the project on which this analysis has b" +
         "een conducted.")
     private Long projectId;
 
     /**
-     * ID of the sample on which this analysis has been conducted.
-     */
-    @NotNull
-    @ApiModelProperty(value = "ID of the sample on which this analysis has b" +
-        "een conducted.")
-    private Long sampleId;
-
-    /**
      * ID of the protocol on which this analysis has been conducted.
      */
-    @NotNull
     @ApiModelProperty(value = "ID of the protocol on which this analysis has" +
         " been conducted.")
     private Long protocolId;
@@ -86,14 +76,6 @@ public class PBAnalysisDTO extends AbstractAuditingDTO {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
-    }
-
-    public Long getSampleId() {
-        return sampleId;
-    }
-
-    public void setSampleId(Long sampleId) {
-        this.sampleId = sampleId;
     }
 
     public Long getProtocolId() {
@@ -162,7 +144,6 @@ public class PBAnalysisDTO extends AbstractAuditingDTO {
         return "PBAnalysisDTO{" +
             "id=" + getId() +
             ", projectId=" + getProjectId() +
-            ", sampleId=" + getSampleId() +
             ", protocolId=" + getProtocolId() +
             ", name=" + getName() +
             ", description=" + getDescription() +

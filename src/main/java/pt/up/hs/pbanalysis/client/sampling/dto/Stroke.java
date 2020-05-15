@@ -11,28 +11,12 @@ import java.util.List;
  */
 public class Stroke implements Serializable {
 
-    private Long id;
-    private Long protocolId;
     private Long startTime;
     private Long endTime;
 
     private List<Dot> dots = new ArrayList<>();
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getProtocolId() {
-        return protocolId;
-    }
-
-    public void setProtocolId(Long protocolId) {
-        this.protocolId = protocolId;
+    public Stroke() {
     }
 
     public Long getStartTime() {

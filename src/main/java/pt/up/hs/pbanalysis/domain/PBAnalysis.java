@@ -36,13 +36,6 @@ public class PBAnalysis extends AbstractAuditingEntity {
     private Long projectId;
 
     /**
-     * ID of the sample on which this analysis has been conducted.
-     */
-    @NotNull
-    @Column(name = "sample_id", nullable = false)
-    private Long sampleId;
-
-    /**
      * ID of the protocol on which this analysis has been conducted.
      */
     @NotNull
@@ -101,19 +94,6 @@ public class PBAnalysis extends AbstractAuditingEntity {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
-    }
-
-    public Long getSampleId() {
-        return sampleId;
-    }
-
-    public PBAnalysis sampleId(Long sampleId) {
-        this.sampleId = sampleId;
-        return this;
-    }
-
-    public void setSampleId(Long sampleId) {
-        this.sampleId = sampleId;
     }
 
     public Long getProtocolId() {
@@ -214,8 +194,7 @@ public class PBAnalysis extends AbstractAuditingEntity {
     public String toString() {
         return "PBAnalysis{" +
             "id=" + getId() +
-            ", projectIdId=" + getProjectId() +
-            ", sampleId=" + getSampleId() +
+            ", projectId=" + getProjectId() +
             ", protocolId=" + getProtocolId() +
             ", name=" + getName() +
             ", description=" + getDescription() +

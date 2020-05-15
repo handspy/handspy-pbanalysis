@@ -28,7 +28,7 @@ import java.util.Optional;
  * REST controller for managing {@link pt.up.hs.pbanalysis.domain.PBBurst}.
  */
 @RestController
-@RequestMapping("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}")
+@RequestMapping("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}")
 public class PBBurstResource {
 
     private final Logger log = LoggerFactory.getLogger(PBBurstResource.class);
@@ -51,7 +51,6 @@ public class PBBurstResource {
      * {@code POST  /pb-bursts} : Create a new pause-burst burst.
      *
      * @param projectId  ID of the project to which the burst belongs.
-     * @param sampleId   ID of the sample to which the burst belongs.
      * @param protocolId ID of the protocol to which the burst belongs.
      * @param analysisId ID of the analysis to which the burst belongs.
      * @param pbBurstDTO the pBBurstDTO to create.
@@ -61,17 +60,16 @@ public class PBBurstResource {
     @PostMapping("/pb-bursts")
     public ResponseEntity<PBBurstDTO> createPBBurst(
         @PathVariable("projectId") Long projectId,
-        @PathVariable("sampleId") Long sampleId,
         @PathVariable("protocolId") Long protocolId,
         @PathVariable("analysisId") Long analysisId,
         @Valid @RequestBody PBBurstDTO pbBurstDTO
     ) throws URISyntaxException {
-        log.debug("REST request to save pause-burst burst {} of project {} of sample {} of protocol {} of analysis {}", pbBurstDTO, projectId, sampleId, protocolId, analysisId);
+        log.debug("REST request to save pause-burst burst {} of project {} of protocol {} of analysis {}", pbBurstDTO, projectId, protocolId, analysisId);
         if (pbBurstDTO.getId() != null) {
             throw new BadRequestAlertException("A new pause-burst burst cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        PBBurstDTO result = pBBurstService.save(projectId, sampleId, protocolId, analysisId, pbBurstDTO);
-        return ResponseEntity.created(new URI("/api/projects/" + projectId + "/samples/" + sampleId + "/protocols/" + protocolId + "/pb-analyses/" + analysisId + "/pb-bursts/" + result.getId()))
+        PBBurstDTO result = pBBurstService.save(projectId, protocolId, analysisId, pbBurstDTO);
+        return ResponseEntity.created(new URI("/api/projects/" + projectId + "/protocols/" + protocolId + "/pb-analyses/" + analysisId + "/pb-bursts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
@@ -80,7 +78,6 @@ public class PBBurstResource {
      * {@code PUT  /pb-bursts} : Updates an existing pause-burst burst.
      *
      * @param projectId  ID of the project to which the burst belongs.
-     * @param sampleId   ID of the sample to which the burst belongs.
      * @param protocolId ID of the protocol to which the burst belongs.
      * @param analysisId ID of the analysis to which the burst belongs.
      * @param pbBurstDTO the pBBurstDTO to update.
@@ -91,16 +88,15 @@ public class PBBurstResource {
     @PutMapping("/pb-bursts")
     public ResponseEntity<PBBurstDTO> updatePBBurst(
         @PathVariable("projectId") Long projectId,
-        @PathVariable("sampleId") Long sampleId,
         @PathVariable("protocolId") Long protocolId,
         @PathVariable("analysisId") Long analysisId,
         @Valid @RequestBody PBBurstDTO pbBurstDTO
     ) {
-        log.debug("REST request to update pause-burst burst {} of project {} of sample {} of protocol {} of analysis {}", pbBurstDTO, projectId, sampleId, protocolId, analysisId);
+        log.debug("REST request to update pause-burst burst {} of project {} of protocol {} of analysis {}", pbBurstDTO, projectId, protocolId, analysisId);
         if (pbBurstDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        PBBurstDTO result = pBBurstService.save(projectId, sampleId, protocolId, analysisId, pbBurstDTO);
+        PBBurstDTO result = pBBurstService.save(projectId, protocolId, analysisId, pbBurstDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, pbBurstDTO.getId().toString()))
             .body(result);
@@ -110,7 +106,6 @@ public class PBBurstResource {
      * {@code GET  /pb-bursts} : get all the pause-burst bursts.
      *
      * @param projectId  ID of the project to which the bursts belong.
-     * @param sampleId   ID of the sample to which the bursts belong.
      * @param protocolId ID of the protocol to which the bursts belong.
      * @param analysisId ID of the analysis to which the bursts belong.
      * @param pageable   the pagination information.
@@ -121,14 +116,13 @@ public class PBBurstResource {
     @GetMapping("/pb-bursts")
     public ResponseEntity<List<PBBurstDTO>> getAllPBBursts(
         @PathVariable("projectId") Long projectId,
-        @PathVariable("sampleId") Long sampleId,
         @PathVariable("protocolId") Long protocolId,
         @PathVariable("analysisId") Long analysisId,
         PBBurstCriteria criteria, Pageable pageable
     ) {
         log.debug("REST request to get PBBursts by criteria: {}", criteria);
         Page<PBBurstDTO> page = pBBurstQueryService
-            .findByCriteria(projectId, sampleId, protocolId, analysisId, criteria, pageable);
+            .findByCriteria(projectId, protocolId, analysisId, criteria, pageable);
         HttpHeaders headers = PaginationUtil
             .generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -138,7 +132,6 @@ public class PBBurstResource {
      * {@code GET  /pb-bursts/count} : count all the pause-burst bursts.
      *
      * @param projectId  ID of the project to which the bursts belong.
-     * @param sampleId   ID of the sample to which the bursts belong.
      * @param protocolId ID of the protocol to which the bursts belong.
      * @param analysisId ID of the analysis to which the bursts belong.
      * @param criteria   the criteria which the requested entities should match.
@@ -147,21 +140,19 @@ public class PBBurstResource {
     @GetMapping("/pb-bursts/count")
     public ResponseEntity<Long> countPBBursts(
         @PathVariable("projectId") Long projectId,
-        @PathVariable("sampleId") Long sampleId,
         @PathVariable("protocolId") Long protocolId,
         @PathVariable("analysisId") Long analysisId,
         PBBurstCriteria criteria
     ) {
         log.debug("REST request to count PBBursts by criteria: {}", criteria);
         return ResponseEntity.ok()
-            .body(pBBurstQueryService.countByCriteria(projectId, sampleId, protocolId, analysisId, criteria));
+            .body(pBBurstQueryService.countByCriteria(projectId, protocolId, analysisId, criteria));
     }
 
     /**
      * {@code GET  /pb-bursts/:id} : get the "id" pause-burst burst.
      *
      * @param projectId  ID of the project to which the burst belongs.
-     * @param sampleId   ID of the sample to which the burst belongs.
      * @param protocolId ID of the protocol to which the burst belongs.
      * @param analysisId ID of the analysis to which the burst belongs.
      * @param id         the id of the entity to retrieve.
@@ -171,13 +162,12 @@ public class PBBurstResource {
     @GetMapping("/pb-bursts/{id}")
     public ResponseEntity<PBBurstDTO> getPBBurst(
         @PathVariable("projectId") Long projectId,
-        @PathVariable("sampleId") Long sampleId,
         @PathVariable("protocolId") Long protocolId,
         @PathVariable("analysisId") Long analysisId,
         @PathVariable Long id
     ) {
-        log.debug("REST request to get pause-burst burst {} of project {} of sample {} of protocol {} of analysis {}", id, projectId, sampleId, protocolId, analysisId);
-        Optional<PBBurstDTO> pBBurstDTO = pBBurstService.findOne(projectId, sampleId, protocolId, analysisId, id);
+        log.debug("REST request to get pause-burst burst {} of project {} of protocol {} of analysis {}", id, projectId, protocolId, analysisId);
+        Optional<PBBurstDTO> pBBurstDTO = pBBurstService.findOne(projectId, protocolId, analysisId, id);
         return ResponseUtil.wrapOrNotFound(pBBurstDTO);
     }
 
@@ -185,7 +175,6 @@ public class PBBurstResource {
      * {@code DELETE  /pb-bursts/:id} : delete the "id" pause-burst burst.
      *
      * @param projectId  ID of the project to which the burst belongs.
-     * @param sampleId   ID of the sample to which the burst belongs.
      * @param protocolId ID of the protocol to which the burst belongs.
      * @param analysisId ID of the analysis to which the burst belongs.
      * @param id         the id of the entity to delete.
@@ -194,13 +183,12 @@ public class PBBurstResource {
     @DeleteMapping("/pb-bursts/{id}")
     public ResponseEntity<Void> deletePBBurst(
         @PathVariable("projectId") Long projectId,
-        @PathVariable("sampleId") Long sampleId,
         @PathVariable("protocolId") Long protocolId,
         @PathVariable("analysisId") Long analysisId,
         @PathVariable Long id
     ) {
-        log.debug("REST request to delete pause-burst burst {} of project {} of sample {} of protocol {} of analysis {}", id, projectId, sampleId, protocolId, analysisId);
-        pBBurstService.delete(projectId, sampleId, protocolId, analysisId, id);
+        log.debug("REST request to delete pause-burst burst {} of project {} of protocol {} of analysis {}", id, projectId, protocolId, analysisId);
+        pBBurstService.delete(projectId, protocolId, analysisId, id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();

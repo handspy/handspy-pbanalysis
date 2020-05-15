@@ -17,13 +17,12 @@ public interface PBAnalysisService {
      * provided {@link PBAnalysisDTO} entity.
      *
      * @param projectId     ID of the project to which the analysis belongs.
-     * @param sampleId      ID of the sample to which the analysis belongs.
      * @param protocolId    ID of the protocol to which the analysis belongs.
      * @param pbAnalysisDTO the entity to save.
      * @return the persisted entity.
      */
     PBAnalysisDTO analyze(
-        Long projectId, Long sampleId, Long protocolId,
+        Long projectId, Long protocolId,
         PBAnalysisDTO pbAnalysisDTO
     );
 
@@ -31,13 +30,12 @@ public interface PBAnalysisService {
      * Save a Pause-Burst Analysis.
      *
      * @param projectId     ID of the project to which the analysis belongs.
-     * @param sampleId      ID of the sample to which the analysis belongs.
      * @param protocolId    ID of the protocol to which the analysis belongs.
      * @param pbAnalysisDTO the entity to save.
      * @return the persisted entity.
      */
     PBAnalysisDTO save(
-        Long projectId, Long sampleId, Long protocolId,
+        Long projectId, Long protocolId,
         PBAnalysisDTO pbAnalysisDTO
     );
 
@@ -45,37 +43,34 @@ public interface PBAnalysisService {
      * Get all the Pause-Burst Analysis.
      *
      * @param projectId  ID of the project to which the analyses belong.
-     * @param sampleId   ID of the sample to which the analyses belong.
      * @param protocolId ID of the protocol to which the analyses belong.
      * @param pageable   the pagination information.
      * @return the list of entities.
      */
     Page<PBAnalysisDTO> findAll(
-        Long projectId, Long sampleId, Long protocolId, Pageable pageable
+        Long projectId, Long protocolId, Pageable pageable
     );
 
     /**
      * Get the "id" Pause-Burst Analysis.
      *
      * @param projectId  ID of the project to which the analysis belongs.
-     * @param sampleId   ID of the sample to which the analysis belongs.
      * @param protocolId ID of the protocol to which the analysis belongs.
      * @param id         the id of the entity.
      * @return the entity.
      */
     Optional<PBAnalysisDTO> findOne(
-        Long projectId, Long sampleId, Long protocolId, Long id
+        Long projectId, Long protocolId, Long id
     );
 
     /**
      * Delete the "id" Pause-Burst Analysis.
      *
      * @param projectId  ID of the project to which the analysis belongs.
-     * @param sampleId   ID of the sample to which the analysis belongs.
      * @param protocolId ID of the protocol to which the analysis belongs.
      * @param id         the id of the entity.
      */
     void delete(
-        Long projectId, Long sampleId, Long protocolId, Long id
+        Long projectId, Long protocolId, Long id
     );
 }

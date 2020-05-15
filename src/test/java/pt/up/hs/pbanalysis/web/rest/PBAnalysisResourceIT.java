@@ -17,6 +17,7 @@ import pt.up.hs.pbanalysis.PBAnalysisApp;
 import pt.up.hs.pbanalysis.client.sampling.SamplingFeignClient;
 import pt.up.hs.pbanalysis.client.sampling.dto.Dot;
 import pt.up.hs.pbanalysis.client.sampling.dto.DotType;
+import pt.up.hs.pbanalysis.client.sampling.dto.Protocol;
 import pt.up.hs.pbanalysis.client.sampling.dto.Stroke;
 import pt.up.hs.pbanalysis.config.SecurityBeanOverrideConfiguration;
 import pt.up.hs.pbanalysis.domain.PBAnalysis;
@@ -51,8 +52,6 @@ public class PBAnalysisResourceIT {
 
     private static final Long DEFAULT_PROJECT_ID = 1L;
     private static final Long OTHER_PROJECT_ID = 2L;
-    private static final Long DEFAULT_SAMPLE_ID = 1001L;
-    private static final Long OTHER_SAMPLE_ID = 1002L;
     private static final Long DEFAULT_PROTOCOL_ID = 10001L;
     private static final Long OTHER_PROTOCOL_ID = 10002L;
 
@@ -118,29 +117,35 @@ public class PBAnalysisResourceIT {
             .setValidator(validator).build();
     }
 
+    public Protocol getProtocol() {
+
+        Protocol protocol = new Protocol();
+
+        protocol.setHeight(1000D);
+        protocol.setWidth(1000D);
+
+        protocol.setStrokes(getStrokes());
+
+        return protocol;
+    }
+
     public List<Stroke> getStrokes() {
 
         List<Stroke> strokes = new ArrayList<>();
 
         Stroke stroke1 = new Stroke();
-        stroke1.setId(1L);
-        stroke1.setProtocolId(DEFAULT_PROTOCOL_ID);
         stroke1.setStartTime(0L);
         stroke1.setEndTime(999L);
         stroke1.setDots(getRandomDots(5, 0L, 999L));
         strokes.add(stroke1);
 
         Stroke stroke2 = new Stroke();
-        stroke2.setId(2L);
-        stroke2.setProtocolId(DEFAULT_PROTOCOL_ID);
         stroke2.setStartTime(1000L);
         stroke2.setEndTime(2499L);
         stroke2.setDots(getRandomDots(10, 1000L, 2499L));
         strokes.add(stroke2);
 
         Stroke stroke3 = new Stroke();
-        stroke3.setId(3L);
-        stroke3.setProtocolId(DEFAULT_PROTOCOL_ID);
         stroke3.setStartTime(2500L);
         stroke3.setEndTime(3000L);
         stroke3.setDots(getRandomDots(7, 2500L, 3000L));
@@ -154,7 +159,6 @@ public class PBAnalysisResourceIT {
         for (int i = 0; i < count; i++) {
             long captureInterval = (long) (((double) endTime - startTime) / count);
             Dot dot = new Dot();
-            dot.setId(ThreadLocalRandom.current().nextLong(100000L));
             dot.setTimestamp(startTime + captureInterval * i);
             dot.setX(ThreadLocalRandom.current().nextDouble(1000D));
             dot.setY(ThreadLocalRandom.current().nextDouble(1000D));
@@ -174,7 +178,6 @@ public class PBAnalysisResourceIT {
     public static PBAnalysis createEntity(EntityManager em) {
         return new PBAnalysis()
             .projectId(DEFAULT_PROJECT_ID)
-            .sampleId(DEFAULT_SAMPLE_ID)
             .protocolId(DEFAULT_PROTOCOL_ID)
             .name(DEFAULT_NAME)
             .description(DEFAULT_DESCRIPTION)
@@ -190,7 +193,6 @@ public class PBAnalysisResourceIT {
     public static PBAnalysis createUpdatedEntity(EntityManager em) {
         return new PBAnalysis()
             .projectId(DEFAULT_PROJECT_ID)
-            .sampleId(DEFAULT_SAMPLE_ID)
             .protocolId(DEFAULT_PROTOCOL_ID)
             .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION)
@@ -209,7 +211,7 @@ public class PBAnalysisResourceIT {
 
         // Create the Pause-Burst Analysis
         PBAnalysisDTO pBAnalysisDTO = pBAnalysisMapper.toDto(pbAnalysis);
-        restPBAnalysisMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses?analyze=false", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID)
+        restPBAnalysisMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses?analyze=false", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBAnalysisDTO)))
             .andExpect(status().isCreated());
@@ -218,7 +220,6 @@ public class PBAnalysisResourceIT {
         List<PBAnalysis> pbAnalysisList = pbAnalysisRepository.findAll();
         assertThat(pbAnalysisList).hasSize(databaseSizeBeforeCreate + 1);
         PBAnalysis testPBAnalysis = pbAnalysisList.get(pbAnalysisList.size() - 1);
-        assertThat(testPBAnalysis.getSampleId()).isEqualTo(DEFAULT_SAMPLE_ID);
         assertThat(testPBAnalysis.getProtocolId()).isEqualTo(DEFAULT_PROTOCOL_ID);
         assertThat(testPBAnalysis.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testPBAnalysis.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
@@ -230,14 +231,14 @@ public class PBAnalysisResourceIT {
     public void createPBAnalysisWithAnalyze() throws Exception {
 
         when(
-            samplingFeignClient.getProtocolStrokes(DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
-        ).thenReturn(getStrokes());
+            samplingFeignClient.getProtocolData(DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
+        ).thenReturn(getProtocol());
 
         int databaseSizeBeforeCreate = pbAnalysisRepository.findAll().size();
 
         // Create the Pause-Burst Analysis
         PBAnalysisDTO pBAnalysisDTO = pBAnalysisMapper.toDto(pbAnalysis);
-        restPBAnalysisMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID)
+        restPBAnalysisMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBAnalysisDTO)))
             .andExpect(status().isCreated());
@@ -247,7 +248,6 @@ public class PBAnalysisResourceIT {
         assertThat(pbAnalysisList).hasSize(databaseSizeBeforeCreate + 1);
         PBAnalysis testPBAnalysis = pbAnalysisList.get(pbAnalysisList.size() - 1);
         assertThat(testPBAnalysis.getProjectId()).isEqualTo(DEFAULT_PROJECT_ID);
-        assertThat(testPBAnalysis.getSampleId()).isEqualTo(DEFAULT_SAMPLE_ID);
         assertThat(testPBAnalysis.getProtocolId()).isEqualTo(DEFAULT_PROTOCOL_ID);
         assertThat(testPBAnalysis.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testPBAnalysis.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
@@ -265,7 +265,7 @@ public class PBAnalysisResourceIT {
         PBAnalysisDTO pBAnalysisDTO = pBAnalysisMapper.toDto(pbAnalysis);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restPBAnalysisMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID)
+        restPBAnalysisMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBAnalysisDTO)))
             .andExpect(status().isBadRequest());
@@ -286,26 +286,7 @@ public class PBAnalysisResourceIT {
         // Create the PBAnalysis, which fails.
         PBAnalysisDTO pBAnalysisDTO = pBAnalysisMapper.toDto(pbAnalysis);
 
-        restPBAnalysisMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID)
-            .contentType(TestUtil.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(pBAnalysisDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<PBAnalysis> pbAnalysisList = pbAnalysisRepository.findAll();
-        assertThat(pbAnalysisList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkSampleIdIsRequired() throws Exception {
-        int databaseSizeBeforeTest = pbAnalysisRepository.findAll().size();
-        // set the field null
-        pbAnalysis.setSampleId(null);
-
-        // Create the PBAnalysis, which fails.
-        PBAnalysisDTO pBAnalysisDTO = pBAnalysisMapper.toDto(pbAnalysis);
-
-        restPBAnalysisMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID)
+        restPBAnalysisMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBAnalysisDTO)))
             .andExpect(status().isBadRequest());
@@ -321,11 +302,10 @@ public class PBAnalysisResourceIT {
         pbAnalysisRepository.saveAndFlush(pbAnalysis);
 
         // Get all the pbAnalysisList
-        restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses?sort=id,desc", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID))
+        restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses?sort=id,desc", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(pbAnalysis.getId().intValue())))
-            .andExpect(jsonPath("$.[*].sampleId").value(hasItem(DEFAULT_SAMPLE_ID.intValue())))
             .andExpect(jsonPath("$.[*].protocolId").value(hasItem(DEFAULT_PROTOCOL_ID.intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
@@ -340,11 +320,10 @@ public class PBAnalysisResourceIT {
         pbAnalysisRepository.saveAndFlush(pbAnalysis);
 
         // Get the pBAnalysis
-        restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{id}", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId()))
+        restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{id}", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(pbAnalysis.getId().intValue()))
-            .andExpect(jsonPath("$.sampleId").value(DEFAULT_SAMPLE_ID.intValue()))
             .andExpect(jsonPath("$.protocolId").value(DEFAULT_PROTOCOL_ID.intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
@@ -629,12 +608,11 @@ public class PBAnalysisResourceIT {
      * Executes the search, and checks that the default entity is returned.
      */
     private void defaultPBAnalysisShouldBeFound(String filter) throws Exception {
-        restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID))
+        restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(pbAnalysis.getId().intValue())))
             .andExpect(jsonPath("$.[*].projectId").value(hasItem(DEFAULT_PROJECT_ID.intValue())))
-            .andExpect(jsonPath("$.[*].sampleId").value(hasItem(DEFAULT_SAMPLE_ID.intValue())))
             .andExpect(jsonPath("$.[*].protocolId").value(hasItem(DEFAULT_PROTOCOL_ID.intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
@@ -642,7 +620,7 @@ public class PBAnalysisResourceIT {
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)));
 
         // Check, that the count call also returns 1
-        restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/count?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID))
+        restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/count?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(content().string("1"));
@@ -652,14 +630,14 @@ public class PBAnalysisResourceIT {
      * Executes the search, and checks that the default entity is not returned.
      */
     private void defaultPBAnalysisShouldNotBeFound(String filter) throws Exception {
-        restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID))
+        restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
 
         // Check, that the count call also returns 0
-        restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/count?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID))
+        restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/count?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(content().string("0"));
@@ -670,7 +648,7 @@ public class PBAnalysisResourceIT {
     @Transactional
     public void getNonExistingPBAnalysis() throws Exception {
         // Get the pBAnalysis
-        restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{id}", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, Long.MAX_VALUE))
+        restPBAnalysisMockMvc.perform(get("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{id}", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }
 
@@ -688,14 +666,13 @@ public class PBAnalysisResourceIT {
         em.detach(updatedPBAnalysis);
         updatedPBAnalysis
             .projectId(OTHER_PROJECT_ID)
-            .sampleId(OTHER_SAMPLE_ID)
             .protocolId(OTHER_PROTOCOL_ID)
             .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION)
             .threshold(UPDATED_THRESHOLD);
         PBAnalysisDTO pBAnalysisDTO = pBAnalysisMapper.toDto(updatedPBAnalysis);
 
-        restPBAnalysisMockMvc.perform(put("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID)
+        restPBAnalysisMockMvc.perform(put("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBAnalysisDTO)))
             .andExpect(status().isOk());
@@ -705,7 +682,6 @@ public class PBAnalysisResourceIT {
         assertThat(pbAnalysisList).hasSize(databaseSizeBeforeUpdate);
         PBAnalysis testPBAnalysis = pbAnalysisList.get(pbAnalysisList.size() - 1);
         assertThat(testPBAnalysis.getProjectId()).isEqualTo(DEFAULT_PROJECT_ID);
-        assertThat(testPBAnalysis.getSampleId()).isEqualTo(DEFAULT_SAMPLE_ID);
         assertThat(testPBAnalysis.getProtocolId()).isEqualTo(DEFAULT_PROTOCOL_ID);
         assertThat(testPBAnalysis.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testPBAnalysis.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
@@ -717,8 +693,8 @@ public class PBAnalysisResourceIT {
     public void updatePBAnalysisWithAnalyze() throws Exception {
 
         when(
-            samplingFeignClient.getProtocolStrokes(DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
-        ).thenReturn(getStrokes());
+            samplingFeignClient.getProtocolData(DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
+        ).thenReturn(getProtocol());
 
         // Initialize the database
         pbAnalysisRepository.saveAndFlush(pbAnalysis);
@@ -731,14 +707,13 @@ public class PBAnalysisResourceIT {
         em.detach(updatedPBAnalysis);
         updatedPBAnalysis
             .projectId(OTHER_PROJECT_ID)
-            .sampleId(OTHER_SAMPLE_ID)
             .protocolId(OTHER_PROTOCOL_ID)
             .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION)
             .threshold(UPDATED_THRESHOLD);
         PBAnalysisDTO pBAnalysisDTO = pBAnalysisMapper.toDto(updatedPBAnalysis);
 
-        restPBAnalysisMockMvc.perform(put("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses?analyze=true", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID)
+        restPBAnalysisMockMvc.perform(put("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses?analyze=true", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBAnalysisDTO)))
             .andExpect(status().isOk());
@@ -748,7 +723,6 @@ public class PBAnalysisResourceIT {
         assertThat(pbAnalysisList).hasSize(databaseSizeBeforeUpdate);
         PBAnalysis testPBAnalysis = pbAnalysisList.get(pbAnalysisList.size() - 1);
         assertThat(testPBAnalysis.getProjectId()).isEqualTo(DEFAULT_PROJECT_ID);
-        assertThat(testPBAnalysis.getSampleId()).isEqualTo(DEFAULT_SAMPLE_ID);
         assertThat(testPBAnalysis.getProtocolId()).isEqualTo(DEFAULT_PROTOCOL_ID);
         assertThat(testPBAnalysis.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testPBAnalysis.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
@@ -767,7 +741,7 @@ public class PBAnalysisResourceIT {
         PBAnalysisDTO pBAnalysisDTO = pBAnalysisMapper.toDto(pbAnalysis);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restPBAnalysisMockMvc.perform(put("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID)
+        restPBAnalysisMockMvc.perform(put("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBAnalysisDTO)))
             .andExpect(status().isBadRequest());
@@ -786,7 +760,7 @@ public class PBAnalysisResourceIT {
         int databaseSizeBeforeDelete = pbAnalysisRepository.findAll().size();
 
         // Delete the pBAnalysis
-        restPBAnalysisMockMvc.perform(delete("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{id}", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
+        restPBAnalysisMockMvc.perform(delete("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{id}", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
             .accept(TestUtil.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 

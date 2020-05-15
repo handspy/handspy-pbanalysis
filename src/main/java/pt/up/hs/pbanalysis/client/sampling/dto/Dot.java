@@ -9,28 +9,13 @@ import java.io.Serializable;
  */
 public class Dot implements Serializable {
 
-    private Long id;
-    private Long strokeId;
     private Long timestamp;
     private Double x;
     private Double y;
     private DotType type;
     private Double pressure;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getStrokeId() {
-        return strokeId;
-    }
-
-    public void setStrokeId(Long strokeId) {
-        this.strokeId = strokeId;
+    public Dot() {
     }
 
     public Long getTimestamp() {

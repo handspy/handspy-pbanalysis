@@ -41,8 +41,6 @@ public class PBBurstResourceIT {
 
     private static final Long DEFAULT_PROJECT_ID = 1L;
     private static final Long OTHER_PROJECT_ID = 2L;
-    private static final Long DEFAULT_SAMPLE_ID = 1001L;
-    private static final Long OTHER_SAMPLE_ID = 1002L;
     private static final Long DEFAULT_PROTOCOL_ID = 10001L;
     private static final Long OTHER_PROTOCOL_ID = 10002L;
     private static final Long DEFAULT_ANALYSIS_ID = 100001L;
@@ -201,7 +199,7 @@ public class PBBurstResourceIT {
 
         // Create the PBBurst
         PBBurstDTO pBBurstDTO = pbBurstMapper.toDto(pbBurst);
-        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
+        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBBurstDTO)))
             .andExpect(status().isCreated());
@@ -232,7 +230,7 @@ public class PBBurstResourceIT {
         PBBurstDTO pBBurstDTO = pbBurstMapper.toDto(pbBurst);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
+        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBBurstDTO)))
             .andExpect(status().isBadRequest());
@@ -253,7 +251,7 @@ public class PBBurstResourceIT {
         // Create the PBBurst, which fails.
         PBBurstDTO pBBurstDTO = pbBurstMapper.toDto(pbBurst);
 
-        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
+        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBBurstDTO)))
             .andExpect(status().isBadRequest());
@@ -272,7 +270,7 @@ public class PBBurstResourceIT {
         // Create the PBBurst, which fails.
         PBBurstDTO pBBurstDTO = pbBurstMapper.toDto(pbBurst);
 
-        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
+        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBBurstDTO)))
             .andExpect(status().isBadRequest());
@@ -291,7 +289,7 @@ public class PBBurstResourceIT {
         // Create the PBBurst, which fails.
         PBBurstDTO pBBurstDTO = pbBurstMapper.toDto(pbBurst);
 
-        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
+        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBBurstDTO)))
             .andExpect(status().isBadRequest());
@@ -310,7 +308,7 @@ public class PBBurstResourceIT {
         // Create the PBBurst, which fails.
         PBBurstDTO pBBurstDTO = pbBurstMapper.toDto(pbBurst);
 
-        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
+        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBBurstDTO)))
             .andExpect(status().isBadRequest());
@@ -329,7 +327,7 @@ public class PBBurstResourceIT {
         // Create the PBBurst, which fails.
         PBBurstDTO pBBurstDTO = pbBurstMapper.toDto(pbBurst);
 
-        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
+        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBBurstDTO)))
             .andExpect(status().isBadRequest());
@@ -348,7 +346,7 @@ public class PBBurstResourceIT {
         // Create the PBBurst, which fails.
         PBBurstDTO pBBurstDTO = pbBurstMapper.toDto(pbBurst);
 
-        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
+        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBBurstDTO)))
             .andExpect(status().isBadRequest());
@@ -367,7 +365,7 @@ public class PBBurstResourceIT {
         // Create the PBBurst, which fails.
         PBBurstDTO pBBurstDTO = pbBurstMapper.toDto(pbBurst);
 
-        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
+        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBBurstDTO)))
             .andExpect(status().isBadRequest());
@@ -386,7 +384,7 @@ public class PBBurstResourceIT {
         // Create the PBBurst, which fails.
         PBBurstDTO pBBurstDTO = pbBurstMapper.toDto(pbBurst);
 
-        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
+        restPBBurstMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBBurstDTO)))
             .andExpect(status().isBadRequest());
@@ -402,7 +400,7 @@ public class PBBurstResourceIT {
         pbBurstRepository.saveAndFlush(pbBurst);
 
         // Get all the pBBurstList
-        restPBBurstMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts?sort=id,desc", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId()))
+        restPBBurstMockMvc.perform(get("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts?sort=id,desc", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(pbBurst.getId().intValue())))
@@ -425,7 +423,7 @@ public class PBBurstResourceIT {
         pbBurstRepository.saveAndFlush(pbBurst);
 
         // Get the pBBurst
-        restPBBurstMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts/{id}", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId(), pbBurst.getId()))
+        restPBBurstMockMvc.perform(get("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts/{id}", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId(), pbBurst.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(pbBurst.getId().intValue()))
@@ -1487,7 +1485,7 @@ public class PBBurstResourceIT {
      * Executes the search, and checks that the default entity is returned.
      */
     private void defaultPBBurstShouldBeFound(String filter) throws Exception {
-        restPBBurstMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId()))
+        restPBBurstMockMvc.perform(get("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(pbBurst.getId().intValue())))
@@ -1503,7 +1501,7 @@ public class PBBurstResourceIT {
             .andExpect(jsonPath("$.[*].dotCount").value(hasItem(DEFAULT_DOT_COUNT)));
 
         // Check, that the count call also returns 1
-        restPBBurstMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts/count?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId()))
+        restPBBurstMockMvc.perform(get("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts/count?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(content().string("1"));
@@ -1513,14 +1511,14 @@ public class PBBurstResourceIT {
      * Executes the search, and checks that the default entity is not returned.
      */
     private void defaultPBBurstShouldNotBeFound(String filter) throws Exception {
-        restPBBurstMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId()))
+        restPBBurstMockMvc.perform(get("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
 
         // Check, that the count call also returns 0
-        restPBBurstMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts/count?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId()))
+        restPBBurstMockMvc.perform(get("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts/count?sort=id,desc&" + filter, DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(content().string("0"));
@@ -1531,7 +1529,7 @@ public class PBBurstResourceIT {
     @Transactional
     public void getNonExistingPBBurst() throws Exception {
         // Get the pBBurst
-        restPBBurstMockMvc.perform(get("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts/{id}", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId(), Long.MAX_VALUE))
+        restPBBurstMockMvc.perform(get("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts/{id}", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId(), Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }
 
@@ -1560,7 +1558,7 @@ public class PBBurstResourceIT {
             .dotCount(UPDATED_DOT_COUNT);
         PBBurstDTO pBBurstDTO = pbBurstMapper.toDto(updatedPBBurst);
 
-        restPBBurstMockMvc.perform(put("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
+        restPBBurstMockMvc.perform(put("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBBurstDTO)))
             .andExpect(status().isOk());
@@ -1590,7 +1588,7 @@ public class PBBurstResourceIT {
         PBBurstDTO pBBurstDTO = pbBurstMapper.toDto(pbBurst);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restPBBurstMockMvc.perform(put("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
+        restPBBurstMockMvc.perform(put("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId())
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBBurstDTO)))
             .andExpect(status().isBadRequest());
@@ -1609,7 +1607,7 @@ public class PBBurstResourceIT {
         int databaseSizeBeforeDelete = pbBurstRepository.findAll().size();
 
         // Delete the pBBurst
-        restPBBurstMockMvc.perform(delete("/api/projects/{projectId}/samples/{sampleId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts/{id}", DEFAULT_PROJECT_ID, DEFAULT_SAMPLE_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId(), pbBurst.getId())
+        restPBBurstMockMvc.perform(delete("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses/{analysisId}/pb-bursts/{id}", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID, pbAnalysis.getId(), pbBurst.getId())
             .accept(TestUtil.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 

@@ -1,22 +1,21 @@
 package pt.up.hs.pbanalysis.service.impl;
 
-import org.springframework.http.ResponseEntity;
-import pt.up.hs.pbanalysis.client.sampling.SamplingFeignClient;
-import pt.up.hs.pbanalysis.client.sampling.dto.Stroke;
-import pt.up.hs.pbanalysis.service.PBAnalysisService;
-import pt.up.hs.pbanalysis.domain.PBAnalysis;
-import pt.up.hs.pbanalysis.repository.PBAnalysisRepository;
-import pt.up.hs.pbanalysis.service.dto.PBAnalysisDTO;
-import pt.up.hs.pbanalysis.service.dto.PBBurstDTO;
-import pt.up.hs.pbanalysis.service.mapper.BurstMapper;
-import pt.up.hs.pbanalysis.service.mapper.PBAnalysisMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pt.up.hs.pbanalysis.client.sampling.SamplingFeignClient;
+import pt.up.hs.pbanalysis.client.sampling.dto.Protocol;
+import pt.up.hs.pbanalysis.client.sampling.dto.Stroke;
+import pt.up.hs.pbanalysis.domain.PBAnalysis;
+import pt.up.hs.pbanalysis.repository.PBAnalysisRepository;
+import pt.up.hs.pbanalysis.service.PBAnalysisService;
+import pt.up.hs.pbanalysis.service.dto.PBAnalysisDTO;
+import pt.up.hs.pbanalysis.service.dto.PBBurstDTO;
+import pt.up.hs.pbanalysis.service.mapper.BurstMapper;
+import pt.up.hs.pbanalysis.service.mapper.PBAnalysisMapper;
 import pt.up.hs.pbb.builder.PauseBurstBuilder;
 import pt.up.hs.pbb.models.Burst;
 import pt.up.hs.pbb.reducer.DoubleAverageReducer;
@@ -56,7 +55,6 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
      * provided {@link PBAnalysisDTO} entity.
      *
      * @param projectId     ID of the project to which the analysis belongs.
-     * @param sampleId      ID of the sample to which the analysis belongs.
      * @param protocolId    ID of the protocol to which the analysis belongs.
      * @param pbAnalysisDTO the entity to save.
      * @return the persisted entity.
@@ -64,17 +62,18 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
     @Override
     public PBAnalysisDTO analyze(
         Long projectId,
-        Long sampleId,
         Long protocolId,
         PBAnalysisDTO pbAnalysisDTO
     ) {
-        log.debug("Request to analyze pause-burst analysis {} in protocol {} of sample {} of project {}", pbAnalysisDTO, protocolId, sampleId, projectId);
+        log.debug("Request to analyze pause-burst analysis {} in protocol {} of project {}", pbAnalysisDTO, protocolId, projectId);
 
         PauseBurstBuilder pbb = new PauseBurstBuilder(pbAnalysisDTO.getThreshold())
             .extraReducer("pressure", DoubleAverageReducer.class);
 
-        List<Stroke> strokes = samplingFeignClient
-            .getProtocolStrokes(projectId, protocolId);
+        Protocol data = samplingFeignClient
+            .getProtocolData(projectId, protocolId);
+
+        List<Stroke> strokes = data.getStrokes();
 
         strokes
             .parallelStream()
@@ -94,14 +93,13 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
 
         pbAnalysisDTO.setBursts(pbBurstDTOs);
 
-        return save(projectId, sampleId, protocolId, pbAnalysisDTO);
+        return save(projectId, protocolId, pbAnalysisDTO);
     }
 
     /**
      * Save a pause-burst analysis.
      *
      * @param projectId     ID of the project to which the analysis belongs.
-     * @param sampleId      ID of the sample to which the analysis belongs.
      * @param protocolId    ID of the protocol to which the analysis belongs.
      * @param pbAnalysisDTO the entity to save.
      * @return the persisted entity.
@@ -109,14 +107,12 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
     @Override
     public PBAnalysisDTO save(
         Long projectId,
-        Long sampleId,
         Long protocolId,
         PBAnalysisDTO pbAnalysisDTO
     ) {
-        log.debug("Request to save pause-burst analysis {} of protocol {} of sample {} of project {}", pbAnalysisDTO, protocolId, sampleId, projectId);
+        log.debug("Request to save pause-burst analysis {} of protocol {} of project {}", pbAnalysisDTO, protocolId, projectId);
         PBAnalysis pbAnalysis = pbAnalysisMapper.toEntity(pbAnalysisDTO);
         pbAnalysis.setProjectId(projectId);
-        pbAnalysis.setSampleId(sampleId);
         pbAnalysis.setProtocolId(protocolId);
         pbAnalysis = pbAnalysisRepository.save(pbAnalysis);
         return pbAnalysisMapper.toDto(pbAnalysis);
@@ -126,7 +122,6 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
      * Get all the pBAnalyses.
      *
      * @param projectId  ID of the project to which the analyses belong.
-     * @param sampleId   ID of the sample to which the analyses belong.
      * @param protocolId ID of the protocol to which the analyses belong.
      * @param pageable   the pagination information.
      * @return the list of entities.
@@ -134,9 +129,9 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
     @Override
     @Transactional(readOnly = true)
     public Page<PBAnalysisDTO> findAll(
-        Long projectId, Long sampleId, Long protocolId, Pageable pageable
+        Long projectId, Long protocolId, Pageable pageable
     ) {
-        log.debug("Request to get all pause-burst analyses of protocol {} of sample {} of project {}", protocolId, sampleId, projectId);
+        log.debug("Request to get all pause-burst analyses of protocol {} of project {}", protocolId, projectId);
         return pbAnalysisRepository.findAll(pageable)
             .map(pbAnalysisMapper::toDto);
     }
@@ -145,7 +140,6 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
      * Get one pBAnalysis by id.
      *
      * @param projectId  ID of the project to which the analysis belongs.
-     * @param sampleId   ID of the sample to which the analysis belongs.
      * @param protocolId ID of the protocol to which the analysis belongs.
      * @param id         the id of the entity.
      * @return the entity.
@@ -153,9 +147,9 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
     @Override
     @Transactional(readOnly = true)
     public Optional<PBAnalysisDTO> findOne(
-        Long projectId, Long sampleId, Long protocolId, Long id
+        Long projectId, Long protocolId, Long id
     ) {
-        log.debug("Request to get pause-burst analysis {} of protocol {} of sample {} of project {}", id, protocolId, sampleId, projectId);
+        log.debug("Request to get pause-burst analysis {} of protocol {} of project {}", id, protocolId, projectId);
         return pbAnalysisRepository.findById(id)
             .map(pbAnalysisMapper::toDto);
     }
@@ -164,15 +158,14 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
      * Delete the pBAnalysis by id.
      *
      * @param projectId  ID of the project to which the analysis belongs.
-     * @param sampleId   ID of the sample to which the analysis belongs.
      * @param protocolId ID of the protocol to which the analysis belongs.
      * @param id         the id of the entity.
      */
     @Override
     public void delete(
-        Long projectId, Long sampleId, Long protocolId, Long id
+        Long projectId, Long protocolId, Long id
     ) {
-        log.debug("Request to delete pause-burst analysis {} of protocol {} of sample {} of project {}", id, protocolId, sampleId, projectId);
+        log.debug("Request to delete pause-burst analysis {} of protocol {} of project {}", id, protocolId, projectId);
         pbAnalysisRepository.deleteById(id);
     }
 }

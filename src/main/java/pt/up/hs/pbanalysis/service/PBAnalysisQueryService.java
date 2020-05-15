@@ -43,20 +43,18 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
      * Return a {@link List} of {@link PBAnalysisDTO} which matches the criteria from the database.
      *
      * @param projectId  ID of the project of the analyses.
-     * @param sampleId   ID of the sample of the analyses.
      * @param protocolId ID of the protocol of the analyses.
      * @param criteria   The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
     public List<PBAnalysisDTO> findByCriteria(
-        Long projectId, Long sampleId, Long protocolId,
+        Long projectId, Long protocolId,
         PBAnalysisCriteria criteria
     ) {
         log.debug("find by criteria : {}", criteria);
         final Specification<PBAnalysis> specification = createSpecification(criteria)
             .and(equalsSpecification(root -> root.get("projectId"), projectId))
-            .and(equalsSpecification(root -> root.get("sampleId"), sampleId))
             .and(equalsSpecification(root -> root.get("protocolId"), protocolId));
         return pbAnalysisMapper.toDto(pbAnalysisRepository.findAll(specification));
     }
@@ -65,7 +63,6 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
      * Return a {@link Page} of {@link PBAnalysisDTO} which matches the criteria from the database.
      *
      * @param projectId  ID of the project of the analyses.
-     * @param sampleId   ID of the sample of the analyses.
      * @param protocolId ID of the protocol of the analyses.
      * @param criteria   The object which holds all the filters, which the entities should match.
      * @param page       The page, which should be returned.
@@ -73,13 +70,12 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
      */
     @Transactional(readOnly = true)
     public Page<PBAnalysisDTO> findByCriteria(
-        Long projectId, Long sampleId, Long protocolId,
+        Long projectId, Long protocolId,
         PBAnalysisCriteria criteria, Pageable page
     ) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<PBAnalysis> specification = createSpecification(criteria)
             .and(equalsSpecification(root -> root.get("projectId"), projectId))
-            .and(equalsSpecification(root -> root.get("sampleId"), sampleId))
             .and(equalsSpecification(root -> root.get("protocolId"), protocolId));
         return pbAnalysisRepository.findAll(specification, page)
             .map(pbAnalysisMapper::toDto);
@@ -89,20 +85,18 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
      * Return the number of matching entities in the database.
      *
      * @param projectId  ID of the project of the analyses.
-     * @param sampleId   ID of the sample of the analyses.
      * @param protocolId ID of the protocol of the analyses.
      * @param criteria   The object which holds all the filters, which the entities should match.
      * @return the number of matching entities.
      */
     @Transactional(readOnly = true)
     public long countByCriteria(
-        Long projectId, Long sampleId, Long protocolId,
+        Long projectId, Long protocolId,
         PBAnalysisCriteria criteria
     ) {
         log.debug("count by criteria : {}", criteria);
         final Specification<PBAnalysis> specification = createSpecification(criteria)
             .and(equalsSpecification(root -> root.get("projectId"), projectId))
-            .and(equalsSpecification(root -> root.get("sampleId"), sampleId))
             .and(equalsSpecification(root -> root.get("protocolId"), protocolId));
         return pbAnalysisRepository.count(specification);
     }

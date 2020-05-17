@@ -20,8 +20,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@RestController
-@RequestMapping("/api/pbanalysis-kafka")
+/*@RestController
+@RequestMapping("/api/pbanalysis-kafka")*/
 public class PBAnalysisKafkaResource {
 
     private final Logger log = LoggerFactory.getLogger(PBAnalysisKafkaResource.class);

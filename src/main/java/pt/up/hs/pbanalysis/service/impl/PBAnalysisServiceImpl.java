@@ -2,7 +2,6 @@ package pt.up.hs.pbanalysis.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -119,7 +118,7 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
     }
 
     /**
-     * Get all the pBAnalyses.
+     * Get all the Pause-Burst Analyses.
      *
      * @param projectId  ID of the project to which the analyses belong.
      * @param protocolId ID of the protocol to which the analyses belong.
@@ -128,12 +127,14 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<PBAnalysisDTO> findAll(
+    public List<PBAnalysisDTO> findAll(
         Long projectId, Long protocolId, Pageable pageable
     ) {
         log.debug("Request to get all pause-burst analyses of protocol {} of project {}", protocolId, projectId);
-        return pbAnalysisRepository.findAll(pageable)
-            .map(pbAnalysisMapper::toDto);
+        return pbAnalysisRepository.findByProjectIdAndProtocolId(projectId, protocolId)
+            .parallelStream()
+            .map(pbAnalysisMapper::toDto)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -150,7 +151,7 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
         Long projectId, Long protocolId, Long id
     ) {
         log.debug("Request to get pause-burst analysis {} of protocol {} of project {}", id, protocolId, projectId);
-        return pbAnalysisRepository.findById(id)
+        return pbAnalysisRepository.findByProjectIdAndProtocolIdAndId(projectId, protocolId, id)
             .map(pbAnalysisMapper::toDto);
     }
 
@@ -166,6 +167,6 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
         Long projectId, Long protocolId, Long id
     ) {
         log.debug("Request to delete pause-burst analysis {} of protocol {} of project {}", id, protocolId, projectId);
-        pbAnalysisRepository.deleteById(id);
+        pbAnalysisRepository.deleteByProjectIdAndProtocolIdAndId(projectId, protocolId, id);
     }
 }

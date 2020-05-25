@@ -1,10 +1,9 @@
 package pt.up.hs.pbanalysis.service;
 
+import org.springframework.data.domain.Pageable;
 import pt.up.hs.pbanalysis.service.dto.PBAnalysisDTO;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -47,7 +46,7 @@ public interface PBAnalysisService {
      * @param pageable   the pagination information.
      * @return the list of entities.
      */
-    Page<PBAnalysisDTO> findAll(
+    List<PBAnalysisDTO> findAll(
         Long projectId, Long protocolId, Pageable pageable
     );
 

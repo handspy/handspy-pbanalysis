@@ -101,6 +101,12 @@ public class PBBurstDTO implements Serializable {
     @ApiModelProperty(value = "Text slice written in burst.")
     private String text;
 
+    /**
+     * Length (in words) of the text slice written in burst.
+     */
+    @ApiModelProperty(value = "Length (in words) of the text slice written in burst.")
+    private Integer length;
+
     public Long getId() {
         return id;
     }
@@ -123,6 +129,14 @@ public class PBBurstDTO implements Serializable {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public Integer getLength() {
+        return length;
+    }
+
+    public void setLength(Integer length) {
+        this.length = length;
     }
 
     public Long getPauseDuration() {
@@ -232,6 +246,7 @@ public class PBBurstDTO implements Serializable {
             "id=" + getId() +
             ", analysisId=" + getAnalysisId() +
             ", text='" + getText() + "'" +
+            ", length=" + getLength() +
             ", pauseDuration=" + getPauseDuration() +
             ", startTime=" + getStartTime() +
             ", endTime=" + getEndTime() +

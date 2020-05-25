@@ -22,6 +22,7 @@ public interface BurstMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "analysisId", ignore = true)
     @Mapping(target = "text", ignore = true)
+    @Mapping(target = "length", ignore = true)
     @Mapping(source = "extraFeatures", target = "pressure",  qualifiedBy = Pressure.class)
     @Mapping(source = "captureCount", target = "dotCount")
     PBBurstDTO burstToPBBurstDto(Burst burst);

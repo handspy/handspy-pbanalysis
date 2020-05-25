@@ -278,21 +278,29 @@ public class PBAnalysisResourceIT {
 
     @Test
     @Transactional
-    public void checkProtocolIdIsRequired() throws Exception {
+    public void checkProtocolIdIsFilledByPathParam() throws Exception {
         int databaseSizeBeforeTest = pbAnalysisRepository.findAll().size();
+
         // set the field null
         pbAnalysis.setProtocolId(null);
 
-        // Create the PBAnalysis, which fails.
+        // Create the PB Analysis, which fails.
         PBAnalysisDTO pBAnalysisDTO = pBAnalysisMapper.toDto(pbAnalysis);
 
-        restPBAnalysisMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
+        restPBAnalysisMockMvc.perform(post("/api/projects/{projectId}/protocols/{protocolId}/pb-analyses?analyze=false", DEFAULT_PROJECT_ID, DEFAULT_PROTOCOL_ID)
             .contentType(TestUtil.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(pBAnalysisDTO)))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().is2xxSuccessful());
 
         List<PBAnalysis> pbAnalysisList = pbAnalysisRepository.findAll();
-        assertThat(pbAnalysisList).hasSize(databaseSizeBeforeTest);
+        assertThat(pbAnalysisList).hasSize(databaseSizeBeforeTest + 1);
+
+        PBAnalysis testPBAnalysis = pbAnalysisList.get(pbAnalysisList.size() - 1);
+        assertThat(testPBAnalysis.getProjectId()).isEqualTo(DEFAULT_PROJECT_ID);
+        assertThat(testPBAnalysis.getProtocolId()).isEqualTo(DEFAULT_PROTOCOL_ID);
+        assertThat(testPBAnalysis.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testPBAnalysis.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testPBAnalysis.getThreshold()).isEqualTo(DEFAULT_THRESHOLD);
     }
 
     @Test

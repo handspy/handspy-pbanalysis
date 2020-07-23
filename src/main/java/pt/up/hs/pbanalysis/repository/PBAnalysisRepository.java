@@ -18,6 +18,11 @@ public interface PBAnalysisRepository extends JpaRepository<PBAnalysis, Long>, J
 
     List<PBAnalysis> findByProjectIdAndProtocolId(@NotNull Long projectId, @NotNull Long protocolId);
 
+    Optional<PBAnalysis> findFirstByProjectIdAndProtocolIdOrderByLastModifiedDateDesc(
+        @NotNull Long projectId,
+        @NotNull Long protocolId
+    );
+
     Optional<PBAnalysis> findByProjectIdAndProtocolIdAndId(
         @NotNull Long projectId,
         @NotNull Long protocolId,

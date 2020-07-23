@@ -12,6 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pt.up.hs.pbanalysis.constants.EntityNames;
+import pt.up.hs.pbanalysis.constants.ErrorKeys;
 import pt.up.hs.pbanalysis.service.PBBurstQueryService;
 import pt.up.hs.pbanalysis.service.PBBurstService;
 import pt.up.hs.pbanalysis.service.dto.PBBurstCriteria;
@@ -33,13 +35,10 @@ public class PBBurstResource {
 
     private final Logger log = LoggerFactory.getLogger(PBBurstResource.class);
 
-    private static final String ENTITY_NAME = "pbanalysisPbBurst";
-
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
     private final PBBurstService pBBurstService;
-
     private final PBBurstQueryService pBBurstQueryService;
 
     public PBBurstResource(PBBurstService pBBurstService, PBBurstQueryService pBBurstQueryService) {
@@ -66,11 +65,11 @@ public class PBBurstResource {
     ) throws URISyntaxException {
         log.debug("REST request to save pause-burst burst {} of project {} of protocol {} of analysis {}", pbBurstDTO, projectId, protocolId, analysisId);
         if (pbBurstDTO.getId() != null) {
-            throw new BadRequestAlertException("A new pause-burst burst cannot already have an ID", ENTITY_NAME, "idexists");
+            throw new BadRequestAlertException("A new pause-burst burst cannot already have an ID", EntityNames.PB_BURST, ErrorKeys.ERR_ID_EXISTS);
         }
         PBBurstDTO result = pBBurstService.save(projectId, protocolId, analysisId, pbBurstDTO);
         return ResponseEntity.created(new URI("/api/projects/" + projectId + "/protocols/" + protocolId + "/pb-analyses/" + analysisId + "/pb-bursts/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, EntityNames.PB_BURST, result.getId().toString()))
             .body(result);
     }
 
@@ -94,11 +93,11 @@ public class PBBurstResource {
     ) {
         log.debug("REST request to update pause-burst burst {} of project {} of protocol {} of analysis {}", pbBurstDTO, projectId, protocolId, analysisId);
         if (pbBurstDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            throw new BadRequestAlertException("Invalid id", EntityNames.PB_BURST, ErrorKeys.ERR_ID_NULL);
         }
         PBBurstDTO result = pBBurstService.save(projectId, protocolId, analysisId, pbBurstDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, pbBurstDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, EntityNames.PB_BURST, pbBurstDTO.getId().toString()))
             .body(result);
     }
 
@@ -190,7 +189,7 @@ public class PBBurstResource {
         log.debug("REST request to delete pause-burst burst {} of project {} of protocol {} of analysis {}", id, projectId, protocolId, analysisId);
         pBBurstService.delete(projectId, protocolId, analysisId, id);
         return ResponseEntity.noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, EntityNames.PB_BURST, id.toString()))
             .build();
     }
 }

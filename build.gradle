@@ -267,6 +267,8 @@ dependencies {
     liquibaseRuntime "org.postgresql:postgresql"
     implementation "org.mapstruct:mapstruct:${mapstruct_version}"
     implementation "pt.up.hs:pause-burst-builder:${pause_burst_builder_version}"
+    implementation "org.apache.poi:poi:${poi_version}"
+    implementation "org.apache.poi:poi-ooxml:${poi_version}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
     annotationProcessor "org.hibernate:hibernate-jpamodelgen:${hibernate_version}"
     annotationProcessor "org.glassfish.jaxb:jaxb-runtime:${jaxb_runtime_version}"

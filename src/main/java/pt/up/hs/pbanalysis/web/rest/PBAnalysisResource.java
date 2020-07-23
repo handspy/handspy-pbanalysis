@@ -12,6 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pt.up.hs.pbanalysis.constants.EntityNames;
+import pt.up.hs.pbanalysis.constants.ErrorKeys;
 import pt.up.hs.pbanalysis.service.PBAnalysisQueryService;
 import pt.up.hs.pbanalysis.service.PBAnalysisService;
 import pt.up.hs.pbanalysis.service.dto.PBAnalysisCriteria;
@@ -32,8 +34,6 @@ import java.util.Optional;
 public class PBAnalysisResource {
 
     private final Logger log = LoggerFactory.getLogger(PBAnalysisResource.class);
-
-    private static final String ENTITY_NAME = "pbanalysisPbAnalysis";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -64,7 +64,7 @@ public class PBAnalysisResource {
     ) throws URISyntaxException {
         log.debug("REST request to save pause-burst analysis {} of project {} of protocol {}", pbAnalysisDTO, projectId, protocolId);
         if (pbAnalysisDTO.getId() != null) {
-            throw new BadRequestAlertException("A new pause-burst analysis cannot already have an ID", ENTITY_NAME, "idexists");
+            throw new BadRequestAlertException("A new pause-burst analysis cannot already have an ID", EntityNames.PB_ANALYSIS, ErrorKeys.ERR_ID_EXISTS);
         }
         PBAnalysisDTO result;
         if (analyze) {
@@ -73,7 +73,7 @@ public class PBAnalysisResource {
             result = pbAnalysisService.save(projectId, protocolId, pbAnalysisDTO);
         }
         return ResponseEntity.created(new URI("/api/projects/" + projectId + "/protocols/" + protocolId + "/pb-analyses/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, EntityNames.PB_ANALYSIS, result.getId().toString()))
             .body(result);
     }
 
@@ -96,7 +96,7 @@ public class PBAnalysisResource {
     ) {
         log.debug("REST request to update pause-burst analysis {} of project {} of protocol {}", pbAnalysisDTO, projectId, protocolId);
         if (pbAnalysisDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            throw new BadRequestAlertException("Invalid id", EntityNames.PB_ANALYSIS, ErrorKeys.ERR_ID_NULL);
         }
         PBAnalysisDTO result;
         if (analyze) {
@@ -105,7 +105,7 @@ public class PBAnalysisResource {
             result = pbAnalysisService.save(projectId, protocolId, pbAnalysisDTO);
         }
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, pbAnalysisDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, EntityNames.PB_ANALYSIS, pbAnalysisDTO.getId().toString()))
             .body(result);
     }
 
@@ -182,7 +182,7 @@ public class PBAnalysisResource {
         log.debug("REST request to delete pause-burst analysis {} of project {} of protocol {}", id, projectId, protocolId);
         pbAnalysisService.delete(projectId, protocolId, id);
         return ResponseEntity.noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, EntityNames.PB_ANALYSIS, id.toString()))
             .build();
     }
 }

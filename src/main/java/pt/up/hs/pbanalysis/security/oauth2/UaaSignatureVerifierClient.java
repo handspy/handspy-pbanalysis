@@ -41,7 +41,7 @@ public class UaaSignatureVerifierClient implements OAuth2SignatureVerifierClient
     @Override
     public SignatureVerifier getSignatureVerifier() throws Exception {
         try {
-            HttpEntity<Void> request = new HttpEntity<Void>(new HttpHeaders());
+            HttpEntity<Void> request = new HttpEntity<>(new HttpHeaders());
             String key = (String) restTemplate
                 .exchange(getPublicKeyEndpoint(), HttpMethod.GET, request, Map.class).getBody()
                 .get("value");

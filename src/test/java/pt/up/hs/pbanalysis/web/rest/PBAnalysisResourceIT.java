@@ -17,7 +17,7 @@ import pt.up.hs.pbanalysis.PBAnalysisApp;
 import pt.up.hs.pbanalysis.client.sampling.SamplingFeignClient;
 import pt.up.hs.pbanalysis.client.sampling.dto.Dot;
 import pt.up.hs.pbanalysis.client.sampling.dto.DotType;
-import pt.up.hs.pbanalysis.client.sampling.dto.Protocol;
+import pt.up.hs.pbanalysis.client.sampling.dto.ProtocolData;
 import pt.up.hs.pbanalysis.client.sampling.dto.Stroke;
 import pt.up.hs.pbanalysis.config.SecurityBeanOverrideConfiguration;
 import pt.up.hs.pbanalysis.domain.PBAnalysis;
@@ -117,16 +117,16 @@ public class PBAnalysisResourceIT {
             .setValidator(validator).build();
     }
 
-    public Protocol getProtocol() {
+    public ProtocolData getProtocol() {
 
-        Protocol protocol = new Protocol();
+        ProtocolData protocolData = new ProtocolData();
 
-        protocol.setHeight(1000D);
-        protocol.setWidth(1000D);
+        protocolData.setHeight(1000D);
+        protocolData.setWidth(1000D);
 
-        protocol.setStrokes(getStrokes());
+        protocolData.setStrokes(getStrokes());
 
-        return protocol;
+        return protocolData;
     }
 
     public List<Stroke> getStrokes() {

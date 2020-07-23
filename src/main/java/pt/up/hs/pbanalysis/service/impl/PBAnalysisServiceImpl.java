@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pt.up.hs.pbanalysis.client.sampling.SamplingFeignClient;
-import pt.up.hs.pbanalysis.client.sampling.dto.Protocol;
+import pt.up.hs.pbanalysis.client.sampling.dto.ProtocolData;
 import pt.up.hs.pbanalysis.client.sampling.dto.Stroke;
 import pt.up.hs.pbanalysis.domain.PBAnalysis;
 import pt.up.hs.pbanalysis.repository.PBAnalysisRepository;
@@ -69,7 +69,7 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
         PauseBurstBuilder pbb = new PauseBurstBuilder(pbAnalysisDTO.getThreshold())
             .extraReducer("pressure", DoubleAverageReducer.class);
 
-        Protocol data = samplingFeignClient
+        ProtocolData data = samplingFeignClient
             .getProtocolData(projectId, protocolId);
 
         List<Stroke> strokes = data.getStrokes();

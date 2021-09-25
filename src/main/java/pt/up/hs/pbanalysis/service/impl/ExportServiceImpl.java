@@ -130,7 +130,7 @@ public class ExportServiceImpl implements ExportService {
         double totalPauseDuration = 0D;
         double totalDistance = 0D;
         double totalTotalTime = 0D;
-        int totalLength = 0;
+        double totalLength = 0D;
         for (int i = 0; i < pbBursts.size(); i++) {
             PBBurst pbBurst = pbBursts.get(i);
             if (burstIdsList != null && !burstIdsList.contains(pbBurst.getId())) {

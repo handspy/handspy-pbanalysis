@@ -71,10 +71,10 @@ public class PBAnalysisReportBuilder {
     }
 
     public PBAnalysisReportBuilder newBurstLine(
-        Integer order,
-        Double burstDuration, Double pauseDuration,
-        Double distance, Double totalTime,
-        Integer length, String text
+            Integer order,
+            Double burstDuration, Double pauseDuration,
+            Double distance, Double totalTime,
+            Double length, String text
     ) {
         if (current == null) {
             return this;

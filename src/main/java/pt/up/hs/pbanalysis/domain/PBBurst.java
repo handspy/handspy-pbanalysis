@@ -109,7 +109,7 @@ public class PBBurst implements Serializable {
      * Length (in words) of the text slice written in burst.
      */
     @Column(name = "length")
-    private Integer length;
+    private Double length;
 
     /**
      * A burst is part of a Pause-Burst analysis.
@@ -142,16 +142,16 @@ public class PBBurst implements Serializable {
         this.text = text;
     }
 
-    public Integer getLength() {
+    public Double getLength() {
         return length;
     }
 
-    public PBBurst length(Integer length) {
+    public PBBurst length(Double length) {
         this.length = length;
         return this;
     }
 
-    public void setLength(Integer length) {
+    public void setLength(Double length) {
         this.length = length;
     }
 

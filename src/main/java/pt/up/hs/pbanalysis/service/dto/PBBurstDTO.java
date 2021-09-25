@@ -105,7 +105,7 @@ public class PBBurstDTO implements Serializable {
      * Length (in words) of the text slice written in burst.
      */
     @ApiModelProperty(value = "Length (in words) of the text slice written in burst.")
-    private Integer length;
+    private Double length;
 
     public Long getId() {
         return id;
@@ -131,11 +131,11 @@ public class PBBurstDTO implements Serializable {
         this.text = text;
     }
 
-    public Integer getLength() {
+    public Double getLength() {
         return length;
     }
 
-    public void setLength(Integer length) {
+    public void setLength(Double length) {
         this.length = length;
     }
 

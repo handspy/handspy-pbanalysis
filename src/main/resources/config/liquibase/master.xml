@@ -18,4 +18,5 @@
     <include file="config/liquibase/changelog/20200223180818_added_entity_PBBurst.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200223180818_added_entity_constraints_PBBurst.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200525183448_added_length_to_PBBurst.xml" relativeToChangelogFile="false" />
+    <include file="config/liquibase/changelog/20210925174848_changed_length_to_double_PBBurst.xml" relativeToChangelogFile="false" />
 </databaseChangeLog>

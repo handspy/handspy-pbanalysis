@@ -28,7 +28,7 @@ public class PBBurstDTO implements Serializable {
     @NotNull
     @Min(value = 0L)
     @ApiModelProperty(value = "Duration of the pause that precedes this burst (in ms).")
-    private Long pauseDuration;
+    private Double pauseDuration;
 
     /**
      * Start time of this burst.
@@ -36,7 +36,7 @@ public class PBBurstDTO implements Serializable {
     @NotNull
     @Min(value = 0L)
     @ApiModelProperty(value = "Start time of this burst.")
-    private Long startTime;
+    private Double startTime;
 
     /**
      * End time of this burst.
@@ -44,7 +44,7 @@ public class PBBurstDTO implements Serializable {
     @NotNull
     @Min(value = 0L)
     @ApiModelProperty(value = "End time of this burst.")
-    private Long endTime;
+    private Double endTime;
 
     /**
      * Start position of this burst in X-axis.
@@ -139,27 +139,27 @@ public class PBBurstDTO implements Serializable {
         this.length = length;
     }
 
-    public Long getPauseDuration() {
+    public Double getPauseDuration() {
         return pauseDuration;
     }
 
-    public void setPauseDuration(Long pauseDuration) {
+    public void setPauseDuration(Double pauseDuration) {
         this.pauseDuration = pauseDuration;
     }
 
-    public Long getStartTime() {
+    public Double getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Long startTime) {
+    public void setStartTime(Double startTime) {
         this.startTime = startTime;
     }
 
-    public Long getEndTime() {
+    public Double getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Long endTime) {
+    public void setEndTime(Double endTime) {
         this.endTime = endTime;
     }
 

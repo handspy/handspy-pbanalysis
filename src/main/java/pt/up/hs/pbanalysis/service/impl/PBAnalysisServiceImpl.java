@@ -11,8 +11,10 @@ import pt.up.hs.pbanalysis.client.sampling.dto.Stroke;
 import pt.up.hs.pbanalysis.domain.PBAnalysis;
 import pt.up.hs.pbanalysis.repository.PBAnalysisRepository;
 import pt.up.hs.pbanalysis.service.PBAnalysisService;
+import pt.up.hs.pbanalysis.service.dto.LengthUnit;
 import pt.up.hs.pbanalysis.service.dto.PBAnalysisDTO;
 import pt.up.hs.pbanalysis.service.dto.PBBurstDTO;
+import pt.up.hs.pbanalysis.service.dto.TimeUnit;
 import pt.up.hs.pbanalysis.service.mapper.BurstMapper;
 import pt.up.hs.pbanalysis.service.mapper.PBAnalysisMapper;
 import pt.up.hs.pbb.builder.PauseBurstBuilder;
@@ -122,18 +124,30 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
      *
      * @param projectId  ID of the project to which the analyses belong.
      * @param protocolId ID of the protocol to which the analyses belong.
+     * @param timeUnit   Unit for time.
+     * @param lengthUnit Unit for length.
      * @param pageable   the pagination information.
      * @return the list of entities.
      */
     @Override
     @Transactional(readOnly = true)
     public List<PBAnalysisDTO> findAll(
-        Long projectId, Long protocolId, Pageable pageable
+        Long projectId, Long protocolId,
+        TimeUnit timeUnit, LengthUnit lengthUnit,
+        Pageable pageable
     ) {
         log.debug("Request to get all pause-burst analyses of protocol {} of project {}", protocolId, projectId);
         return pbAnalysisRepository.findByProjectIdAndProtocolId(projectId, protocolId)
             .parallelStream()
             .map(pbAnalysisMapper::toDto)
+            .peek(pbAnalysis ->
+                pbAnalysis.setBursts(pbAnalysis.getBursts().parallelStream().peek(pbBurst -> {
+                    pbBurst.setStartTime(pbBurst.getStartTime() * timeUnit.getRate());
+                    pbBurst.setEndTime(pbBurst.getEndTime() * timeUnit.getRate());
+                    pbBurst.setPauseDuration(pbBurst.getPauseDuration() * timeUnit.getRate());
+                    pbBurst.setDistance(pbBurst.getDistance() * lengthUnit.getRate());
+                }).collect(Collectors.toList()))
+            )
             .collect(Collectors.toList());
     }
 
@@ -148,11 +162,21 @@ public class PBAnalysisServiceImpl implements PBAnalysisService {
     @Override
     @Transactional(readOnly = true)
     public Optional<PBAnalysisDTO> findOne(
-        Long projectId, Long protocolId, Long id
+        Long projectId, Long protocolId, Long id,
+        TimeUnit timeUnit, LengthUnit lengthUnit
     ) {
         log.debug("Request to get pause-burst analysis {} of protocol {} of project {}", id, protocolId, projectId);
         return pbAnalysisRepository.findByProjectIdAndProtocolIdAndId(projectId, protocolId, id)
-            .map(pbAnalysisMapper::toDto);
+            .map(pbAnalysisMapper::toDto)
+            .map(pbAnalysis -> {
+                pbAnalysis.setBursts(pbAnalysis.getBursts().parallelStream().peek(pbBurst -> {
+                    pbBurst.setStartTime(pbBurst.getStartTime() * timeUnit.getRate());
+                    pbBurst.setEndTime(pbBurst.getEndTime() * timeUnit.getRate());
+                    pbBurst.setPauseDuration(pbBurst.getPauseDuration() * timeUnit.getRate());
+                    pbBurst.setDistance(pbBurst.getDistance() * lengthUnit.getRate());
+                }).collect(Collectors.toList()));
+                return pbAnalysis;
+            });
     }
 
     /**

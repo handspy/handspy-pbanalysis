@@ -1,7 +1,9 @@
 package pt.up.hs.pbanalysis.service;
 
 import org.springframework.data.domain.Pageable;
+import pt.up.hs.pbanalysis.service.dto.LengthUnit;
 import pt.up.hs.pbanalysis.service.dto.PBAnalysisDTO;
+import pt.up.hs.pbanalysis.service.dto.TimeUnit;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +49,9 @@ public interface PBAnalysisService {
      * @return the list of entities.
      */
     List<PBAnalysisDTO> findAll(
-        Long projectId, Long protocolId, Pageable pageable
+        Long projectId, Long protocolId,
+        TimeUnit timeUnit, LengthUnit lengthUnit,
+        Pageable pageable
     );
 
     /**
@@ -59,7 +63,8 @@ public interface PBAnalysisService {
      * @return the entity.
      */
     Optional<PBAnalysisDTO> findOne(
-        Long projectId, Long protocolId, Long id
+        Long projectId, Long protocolId, Long id,
+        TimeUnit timeUnit, LengthUnit lengthUnit
     );
 
     /**

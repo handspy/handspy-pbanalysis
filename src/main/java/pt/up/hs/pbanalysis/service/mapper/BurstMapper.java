@@ -2,6 +2,7 @@ package pt.up.hs.pbanalysis.service.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.Qualifier;
 import pt.up.hs.pbanalysis.service.dto.PBBurstDTO;
 import pt.up.hs.pbb.models.Burst;
@@ -21,6 +22,7 @@ public interface BurstMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "analysisId", ignore = true)
+    @Mapping(target = "pauseDuration", qualifiedByName = "LongToDouble")
     @Mapping(target = "text", ignore = true)
     @Mapping(target = "length", ignore = true)
     @Mapping(source = "extraFeatures", target = "pressure",  qualifiedBy = Pressure.class)
@@ -42,5 +44,10 @@ public interface BurstMapper {
     @Pressure
     default Double pressure(Map<String, Object> in){
         return (Double) in.get("pressure");
+    }
+
+    @Named("LongToDouble")
+    default double longToDouble(long l) {
+        return (double) l;
     }
 }

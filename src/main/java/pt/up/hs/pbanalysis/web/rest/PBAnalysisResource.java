@@ -16,8 +16,10 @@ import pt.up.hs.pbanalysis.constants.EntityNames;
 import pt.up.hs.pbanalysis.constants.ErrorKeys;
 import pt.up.hs.pbanalysis.service.PBAnalysisQueryService;
 import pt.up.hs.pbanalysis.service.PBAnalysisService;
+import pt.up.hs.pbanalysis.service.dto.LengthUnit;
 import pt.up.hs.pbanalysis.service.dto.PBAnalysisCriteria;
 import pt.up.hs.pbanalysis.service.dto.PBAnalysisDTO;
+import pt.up.hs.pbanalysis.service.dto.TimeUnit;
 import pt.up.hs.pbanalysis.web.rest.errors.BadRequestAlertException;
 
 import javax.validation.Valid;
@@ -121,10 +123,28 @@ public class PBAnalysisResource {
     public ResponseEntity<List<PBAnalysisDTO>> getAllPBAnalyses(
         @PathVariable("projectId") Long projectId,
         @PathVariable("protocolId") Long protocolId,
-        PBAnalysisCriteria criteria
+        PBAnalysisCriteria criteria,
+        @RequestParam(value = "timeUnit", required = false, defaultValue = "MS") String timeUnitStr,
+        @RequestParam(value = "lengthUnit", required = false, defaultValue = "MM") String lengthUnitStr
     ) {
         log.debug("REST request to get PBAnalyses by criteria: {}", criteria);
-        List<PBAnalysisDTO> pbAnalysisDTOs = pbAnalysisQueryService.findByCriteria(projectId, protocolId, criteria);
+
+        TimeUnit timeUnit;
+        try {
+            timeUnit = TimeUnit.valueOf(timeUnitStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            timeUnit = TimeUnit.MS;
+        }
+
+        LengthUnit lengthUnit;
+        try {
+            lengthUnit = LengthUnit.valueOf(lengthUnitStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            lengthUnit = LengthUnit.MM;
+        }
+
+        List<PBAnalysisDTO> pbAnalysisDTOs = pbAnalysisQueryService
+            .findByCriteria(projectId, protocolId, timeUnit, lengthUnit, criteria);
         return ResponseEntity.ok().body(pbAnalysisDTOs);
     }
 
@@ -158,10 +178,27 @@ public class PBAnalysisResource {
     public ResponseEntity<PBAnalysisDTO> getPBAnalysis(
         @PathVariable("projectId") Long projectId,
         @PathVariable("protocolId") Long protocolId,
-        @PathVariable Long id
+        @PathVariable Long id,
+        @RequestParam(value = "timeUnit", required = false, defaultValue = "MS") String timeUnitStr,
+        @RequestParam(value = "lengthUnit", required = false, defaultValue = "MM") String lengthUnitStr
     ) {
         log.debug("REST request to get pause-burst analysis {} of project {} of protocol {}", id, projectId, protocolId);
-        Optional<PBAnalysisDTO> pbAnalysisDTO = pbAnalysisService.findOne(projectId, protocolId, id);
+
+        TimeUnit timeUnit;
+        try {
+            timeUnit = TimeUnit.valueOf(timeUnitStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            timeUnit = TimeUnit.MS;
+        }
+
+        LengthUnit lengthUnit;
+        try {
+            lengthUnit = LengthUnit.valueOf(lengthUnitStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            lengthUnit = LengthUnit.MM;
+        }
+
+        Optional<PBAnalysisDTO> pbAnalysisDTO = pbAnalysisService.findOne(projectId, protocolId, id, timeUnit, lengthUnit);
         return ResponseUtil.wrapOrNotFound(pbAnalysisDTO);
     }
 

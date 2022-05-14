@@ -12,12 +12,15 @@ import pt.up.hs.pbanalysis.domain.PBAnalysis;
 import pt.up.hs.pbanalysis.domain.PBAnalysis_;
 import pt.up.hs.pbanalysis.domain.PBBurst_;
 import pt.up.hs.pbanalysis.repository.PBAnalysisRepository;
+import pt.up.hs.pbanalysis.service.dto.LengthUnit;
 import pt.up.hs.pbanalysis.service.dto.PBAnalysisCriteria;
 import pt.up.hs.pbanalysis.service.dto.PBAnalysisDTO;
+import pt.up.hs.pbanalysis.service.dto.TimeUnit;
 import pt.up.hs.pbanalysis.service.mapper.PBAnalysisMapper;
 
 import javax.persistence.criteria.JoinType;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service for executing complex queries for {@link PBAnalysis} entities in the database.
@@ -50,13 +53,24 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
     @Transactional(readOnly = true)
     public List<PBAnalysisDTO> findByCriteria(
         Long projectId, Long protocolId,
+        TimeUnit timeUnit, LengthUnit lengthUnit,
         PBAnalysisCriteria criteria
     ) {
         log.debug("find by criteria : {}", criteria);
         final Specification<PBAnalysis> specification = createSpecification(criteria)
             .and(equalsSpecification(root -> root.get("projectId"), projectId))
             .and(equalsSpecification(root -> root.get("protocolId"), protocolId));
-        return pbAnalysisMapper.toDto(pbAnalysisRepository.findAll(specification));
+        return pbAnalysisMapper.toDto(pbAnalysisRepository.findAll(specification))
+            .parallelStream()
+            .peek(pbAnalysis ->
+                pbAnalysis.setBursts(pbAnalysis.getBursts().parallelStream().peek(pbBurst -> {
+                    pbBurst.setStartTime(pbBurst.getStartTime() * timeUnit.getRate());
+                    pbBurst.setEndTime(pbBurst.getEndTime() * timeUnit.getRate());
+                    pbBurst.setPauseDuration(pbBurst.getPauseDuration() * timeUnit.getRate());
+                    pbBurst.setDistance(pbBurst.getDistance() * lengthUnit.getRate());
+                }).collect(Collectors.toList()))
+            )
+            .collect(Collectors.toList());
     }
 
     /**
@@ -71,6 +85,7 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
     @Transactional(readOnly = true)
     public Page<PBAnalysisDTO> findByCriteria(
         Long projectId, Long protocolId,
+        TimeUnit timeUnit, LengthUnit lengthUnit,
         PBAnalysisCriteria criteria, Pageable page
     ) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
@@ -78,7 +93,16 @@ public class PBAnalysisQueryService extends QueryService<PBAnalysis> {
             .and(equalsSpecification(root -> root.get("projectId"), projectId))
             .and(equalsSpecification(root -> root.get("protocolId"), protocolId));
         return pbAnalysisRepository.findAll(specification, page)
-            .map(pbAnalysisMapper::toDto);
+            .map(pbAnalysisMapper::toDto)
+            .map(pbAnalysis -> {
+                pbAnalysis.setBursts(pbAnalysis.getBursts().parallelStream().peek(pbBurst -> {
+                    pbBurst.setStartTime(pbBurst.getStartTime() * timeUnit.getRate());
+                    pbBurst.setEndTime(pbBurst.getEndTime() * timeUnit.getRate());
+                    pbBurst.setPauseDuration(pbBurst.getPauseDuration() * timeUnit.getRate());
+                    pbBurst.setDistance(pbBurst.getDistance() * lengthUnit.getRate());
+                }).collect(Collectors.toList()));
+                return pbAnalysis;
+            });
     }
 
     /**

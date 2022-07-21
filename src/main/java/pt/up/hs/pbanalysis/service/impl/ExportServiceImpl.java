@@ -146,6 +146,7 @@ public class ExportServiceImpl implements ExportService {
                 pauseDuration,
                 distance,
                 totalTime,
+                distance / burstDuration,
                 pbBurst.getLength() == null ? 0 : pbBurst.getLength(),
                 pbBurst.getText() == null ? "" : pbBurst.getText()
             );
@@ -162,6 +163,7 @@ public class ExportServiceImpl implements ExportService {
             totalPauseDuration,
             totalDistance,
             totalTotalTime,
+            totalDistance / totalDuration,
             totalLength,
             ""
         );

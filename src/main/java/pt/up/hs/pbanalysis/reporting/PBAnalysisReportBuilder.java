@@ -68,6 +68,11 @@ public class PBAnalysisReportBuilder {
                 LocaleContextHolder.getLocale()
             ),
             i18n.getMessage(
+                "report.pbAnalysis.fluency",
+                new String[] { timeUnit.name().toLowerCase() },
+                LocaleContextHolder.getLocale()
+            ),
+            i18n.getMessage(
                 "report.pbAnalysis.text",
                 null,
                 LocaleContextHolder.getLocale()
@@ -82,7 +87,7 @@ public class PBAnalysisReportBuilder {
             Integer order,
             Double burstDuration, Double pauseDuration,
             Double distance, Double totalTime, Double speed,
-            Double length, String text
+            Double length, Double fluency, String text
     ) {
         if (current == null) {
             return this;
@@ -90,7 +95,7 @@ public class PBAnalysisReportBuilder {
         pbAnalysisSheets.get(current).addRow(new Object[] {
             order,
             burstDuration, pauseDuration,
-            distance, totalTime, speed, length,
+            distance, totalTime, speed, length, fluency,
             text
         });
         return this;

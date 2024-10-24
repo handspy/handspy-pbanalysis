@@ -148,6 +148,7 @@ public class ExportServiceImpl implements ExportService {
                 totalTime,
                 distance / burstDuration,
                 pbBurst.getLength() == null ? 0 : pbBurst.getLength(),
+                pbBurst.getLength() == null ? 0 : pbBurst.getLength() / burstDuration,
                 pbBurst.getText() == null ? "" : pbBurst.getText()
             );
 
@@ -165,6 +166,7 @@ public class ExportServiceImpl implements ExportService {
             totalTotalTime,
             totalDistance / totalDuration,
             totalLength,
+            totalLength / totalDuration,
             ""
         );
         pbarBuilder.concludeSheet();

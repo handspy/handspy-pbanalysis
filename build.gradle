@@ -191,7 +191,6 @@ configurations {
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
     //jhipster-needle-gradle-repositories - JHipster will add additional repositories
 }
 
@@ -266,7 +265,7 @@ dependencies {
     implementation "org.postgresql:postgresql"
     liquibaseRuntime "org.postgresql:postgresql"
     implementation "org.mapstruct:mapstruct:${mapstruct_version}"
-    implementation "pt.up.hs:pause-burst-builder:${pause_burst_builder_version}"
+    implementation "io.github.josepaiva94:pause-burst-builder:${pause_burst_builder_version}"
     implementation "org.apache.poi:poi:${poi_version}"
     implementation "org.apache.poi:poi-ooxml:${poi_version}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"

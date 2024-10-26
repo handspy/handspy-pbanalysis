@@ -5,7 +5,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.Qualifier;
 import pt.up.hs.pbanalysis.service.dto.PBBurstDTO;
-import pt.up.hs.pbb.models.Burst;
+import io.github.josepaiva94.pbb.models.Burst;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,5 +1,8 @@
 package pt.up.hs.pbanalysis.service.impl;
 
+import io.github.josepaiva94.pbb.builder.PauseBurstBuilder;
+import io.github.josepaiva94.pbb.models.Burst;
+import io.github.josepaiva94.pbb.reducer.DoubleAverageReducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +20,6 @@ import pt.up.hs.pbanalysis.service.dto.PBBurstDTO;
 import pt.up.hs.pbanalysis.service.dto.TimeUnit;
 import pt.up.hs.pbanalysis.service.mapper.BurstMapper;
 import pt.up.hs.pbanalysis.service.mapper.PBAnalysisMapper;
-import pt.up.hs.pbb.builder.PauseBurstBuilder;
-import pt.up.hs.pbb.models.Burst;
-import pt.up.hs.pbb.reducer.DoubleAverageReducer;
 
 import java.util.*;
 import java.util.stream.Collectors;

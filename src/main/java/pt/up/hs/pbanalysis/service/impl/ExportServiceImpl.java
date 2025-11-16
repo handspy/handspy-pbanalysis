@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pt.up.hs.pbanalysis.client.project.ProjectFeignClient;
+import pt.up.hs.pbanalysis.client.project.dto.Participant;
 import pt.up.hs.pbanalysis.client.sampling.SamplingFeignClient;
 import pt.up.hs.pbanalysis.client.sampling.dto.Protocol;
 import pt.up.hs.pbanalysis.constants.EntityNames;
@@ -38,15 +40,18 @@ public class ExportServiceImpl implements ExportService {
 
     private final PBAnalysisRepository pbAnalysisRepository;
     private final SamplingFeignClient samplingFeignClient;
+    private final ProjectFeignClient projectFeignClient;
 
     public ExportServiceImpl(
         MessageSource messageSource,
         PBAnalysisRepository analysisRepository,
-        SamplingFeignClient samplingFeignClient
+        SamplingFeignClient samplingFeignClient,
+        ProjectFeignClient projectFeignClient
     ) {
         this.messageSource = messageSource;
         this.pbAnalysisRepository = analysisRepository;
         this.samplingFeignClient = samplingFeignClient;
+        this.projectFeignClient = projectFeignClient;
     }
 
     @Override
@@ -112,8 +117,9 @@ public class ExportServiceImpl implements ExportService {
         }
 
         Protocol protocol = samplingFeignClient.getProtocol(pbAnalysis.getProjectId(), pbAnalysis.getProtocolId());
+        Participant participant = projectFeignClient.getParticipant(pbAnalysis.getProjectId(), protocol.getParticipantId());
 
-        String code = String.format("T%d_P%d_%d", protocol.getTaskId(), protocol.getParticipantId(), protocol.getPageNumber());
+        String code = String.format("T%d_P%d_%s_%d", protocol.getTaskId(), protocol.getParticipantId(), participant.getName(), protocol.getPageNumber());
 
         List<PBBurst> pbBursts = pbAnalysis.getBursts().parallelStream()
             .sorted(Comparator.comparingLong(PBBurst::getStartTime))
